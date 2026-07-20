@@ -843,7 +843,7 @@
       border: 1.5px solid var(--border);
       padding: 1rem 1.2rem;
     }
-    #cascadeSvgWrap { max-width: 580px; margin: 0 auto; }
+    #cascadeSvgWrap { max-width: 660px; margin: 0 auto; }
     .bk-cascade-title {
       font-size: 13px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--muted); margin-bottom: .4rem;
@@ -1690,75 +1690,97 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     });
   }
 
+  // ── FESTE BREITE: beide Kaskaden immer gleich groß ──
   const totalW = treeW(root.id);
-  const PAD = 30;
-  // Extra Breite rechts für Icons bei Blattknoten
-  const svgW = Math.max(360, totalW * H_UNIT + PAD * 2 + (ICON_R + ICON_GAP) * 2);
-  layout(root.id, svgW / 2, PAD);
+  const PAD = 28;
+  const SVG_W = 660;                              // fest für AUFNAHME & WIRKUNG
+  const AVAIL = SVG_W - PAD * 2 - (ICON_R + ICON_GAP) * 2;
+  const H_UNIT_DYN = Math.max(108, Math.floor(AVAIL / totalW));
+  const BOX_W_DYN  = Math.min(BOX_W, H_UNIT_DYN - 20);
 
-  let maxY = 0;
-  Object.values(pos).forEach(p => { if (p.y > maxY) maxY = p.y; });
-  const svgH = maxY + BOX_H + PAD + 10;
+  // Neuberechnung Layout mit dynamischen Einheiten
+  const pos2 = {};
+  function layout2(id, x, y) {
+    pos2[id] = {x, y};
+    const kids = childMap[id] || [];
+    if (!kids.length) return;
+    const tot = kids.reduce((s,k) => s + treeW(k.id), 0);
+    let cx = x - (tot / 2) * H_UNIT_DYN + H_UNIT_DYN / 2;
+    kids.forEach(k => {
+      const w = treeW(k.id);
+      layout2(k.id, cx + (w - 1) * H_UNIT_DYN / 2, y + BOX_H + V_GAP);
+      cx += w * H_UNIT_DYN;
+    });
+  }
+  layout2(root.id, SVG_W / 2 - (ICON_R + ICON_GAP), PAD);
 
-  const markId = 'arr_' + color.replace('#','');
-  const filterId = 'sh_' + color.replace('#','');
+  let maxY2 = 0;
+  Object.values(pos2).forEach(p => { if (p.y > maxY2) maxY2 = p.y; });
+  const SVG_H = Math.max(330, maxY2 + BOX_H + PAD + 10);  // Mindesthöhe 330 → gleiche Darstellung
+
+  // Linienfarbe: dunkelgrau – klar sichtbar statt blass
+  const lineCol = '#2d3748';
+  const markId  = 'arr_' + color.replace('#','');
+  const filtId  = 'sh_'  + color.replace('#','');
   const defs = `<defs>
-    <marker id="${markId}" markerWidth="9" markerHeight="9" refX="4" refY="4.5" orient="auto">
-      <path d="M1,1.5 L8,4.5 L1,7.5 Z" fill="${color}" opacity="0.8"/>
+    <marker id="${markId}" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M1,2 L9,5 L1,8 Z" fill="${lineCol}" opacity="0.85"/>
     </marker>
-    <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,0.14)"/>
+    <filter id="${filtId}" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,0.13)"/>
     </filter>
   </defs>`;
 
   let edges = '', cofLabels = '', boxes = '', icons = '';
 
-  // Kanten + Cofaktor-Badges
+  // ── Kanten: dunkel + deutlich ──
   nodes.forEach(n => {
-    if (!n.parent || !pos[n.parent] || !pos[n.id]) return;
-    const px = pos[n.parent].x, py = pos[n.parent].y + BOX_H;
-    const cx2 = pos[n.id].x,   cy2 = pos[n.id].y;
+    if (!n.parent || !pos2[n.parent] || !pos2[n.id]) return;
+    const px = pos2[n.parent].x, py = pos2[n.parent].y + BOX_H;
+    const cx2 = pos2[n.id].x,   cy2 = pos2[n.id].y;
     const my = (py + cy2) / 2;
-    edges += `<path d="M${px},${py} C${px},${my} ${cx2},${my} ${cx2},${cy2}" fill="none" stroke="${color}" stroke-width="2.2" opacity="0.5" marker-end="url(#${markId})"/>`;
+    edges += `<path d="M${px},${py} C${px},${my} ${cx2},${my} ${cx2},${cy2}" fill="none" stroke="${lineCol}" stroke-width="2" opacity="0.72" marker-end="url(#${markId})"/>`;
 
+    // Cofaktor-Badge auf der Kante
     if (n.sub && n.sub.trim().startsWith('+')) {
       const lx = (px + cx2) / 2, ly = (py + cy2) / 2 - 2;
       const txt = n.sub.trim();
-      const tw = txt.length * 5.8 + 16;
+      const tw = txt.length * 5.6 + 16;
       cofLabels += `<rect x="${lx-tw/2}" y="${ly-10}" width="${tw}" height="18" rx="6" fill="white" stroke="${color}" stroke-width="1.3"/>`;
       cofLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9.5" font-weight="700" fill="${color}">${txt}</text>`;
     }
   });
 
-  // Boxen + Icons
+  // ── Boxen + Icons ──
   nodes.forEach(n => {
-    if (!pos[n.id]) return;
-    const {x, y} = pos[n.id];
-    const bx = x - BOX_W / 2;
+    if (!pos2[n.id]) return;
+    const {x, y} = pos2[n.id];
+    const bx = x - BOX_W_DYN / 2;
     const isRoot = !n.parent;
     const isLeaf = (childMap[n.id] || []).length === 0;
     const isCofactor = n.sub && n.sub.trim().startsWith('+');
+    const fsize = BOX_W_DYN < 120 ? 11.5 : 13;
+    const fsub  = BOX_W_DYN < 120 ? 9.5  : 10.5;
 
     if (isRoot) {
-      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="12" fill="${color}" filter="url(#${filterId})"/>`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="12" fill="${color}" filter="url(#${filtId})"/>`;
       boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="14" font-weight="700" fill="white">${n.label}</text>`;
       if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
     } else {
-      const lightFill = `rgba(${rgb},0.10)`;
-      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${lightFill}" stroke="${color}" stroke-width="2" filter="url(#${filterId})"/>`;
-      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#111">${n.label}</text>`;
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="${color}">${n.sub}</text>`;
+      const lf = `rgba(${rgb},0.10)`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="10" fill="${lf}" stroke="${color}" stroke-width="2" filter="url(#${filtId})"/>`;
+      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsize}" font-weight="700" fill="#111">${n.label}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="${color}">${n.sub}</text>`;
 
-      // Grafisches Icon rechts von Blattknoten
       if (isLeaf && n.sub && !isCofactor) {
-        const ix = x + BOX_W / 2 + ICON_GAP + ICON_R;
+        const ix = x + BOX_W_DYN / 2 + ICON_GAP + ICON_R;
         const iy = y + BOX_H / 2;
         icons += categoryIcon(n.sub, ix, iy, color);
       }
     }
   });
 
-  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${defs}${edges}${cofLabels}${boxes}${icons}</svg>`;
+  return `<svg viewBox="0 0 ${SVG_W} ${SVG_H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${defs}${edges}${cofLabels}${boxes}${icons}</svg>`;
 }
 
 // Wählt automatisch den richtigen Renderer
