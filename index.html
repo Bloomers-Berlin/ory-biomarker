@@ -1631,7 +1631,7 @@ function buildBranchCascadeSVG(nodes, accentColor) {
   // Je Ast vom Root eine eigene Pastellfarbe
   const BRANCH_PALETTE = ['#93C5FD','#FCA5A5','#86EFAC','#FCD34D','#C4B5FD','#67E8F9','#F9A8D4','#6EE7B7'];
 
-  const BOX_W = 152, BOX_H = 54, V_GAP = 78;
+  const BOX_W = 152, BOX_H = 62, V_GAP = 76;
   const PAD = 28, SVG_W = 660;
 
   const childMap = {};
@@ -1715,6 +1715,26 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     }
   });
 
+  // Hilfsfunktion: Label in max. 2 Zeilen umbrechen
+  function labelLines(text, boxW, fs) {
+    const maxCh = Math.max(6, Math.floor(boxW / (fs * 0.60)));
+    if (text.length <= maxCh) return [text];
+    const mid = Math.floor(text.length / 2);
+    let sp = text.lastIndexOf(' ', mid);
+    if (sp < 1) sp = text.indexOf(' ', mid);
+    if (sp < 1) return [text.substring(0, maxCh - 1) + '…'];
+    return [text.substring(0, sp), text.substring(sp + 1)];
+  }
+  function drawLabel(text, x, y, boxW, fs, fill, isTwoLine) {
+    const lines = labelLines(text, boxW, fs);
+    if (lines.length === 1) {
+      const yc = isTwoLine ? y + BOX_H / 2 - 8 : y + 22;
+      return `<text x="${x}" y="${yc}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fs}" font-weight="700" fill="${fill}">${lines[0]}</text>`;
+    }
+    const y1 = y + BOX_H / 2 - 12, y2 = y + BOX_H / 2 + 4;
+    return `<text text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fs}" font-weight="700" fill="${fill}"><tspan x="${x}" y="${y1}">${lines[0]}</tspan><tspan x="${x}" y="${y2}">${lines[1]}</tspan></text>`;
+  }
+
   // Boxen: Root=Akzentfarbe voll, Zwischenknoten=hell+Rahmen, Blatt=Astfarbe voll
   nodes.forEach(n => {
     if (!pos2[n.id]) return;
@@ -1723,25 +1743,24 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     const isRoot = !n.parent;
     const isLeaf = (childMap[n.id] || []).length === 0;
     const isCofactor = n.sub && n.sub.trim().startsWith('+');
-    const fsize = BOX_W_DYN < 120 ? 11.5 : 13;
-    const fsub  = BOX_W_DYN < 120 ? 9.5  : 10.5;
-    const nc  = branchCol[n.id] || color;
+    const fsize = BOX_W_DYN < 120 ? 11 : 12.5;
+    const fsub  = BOX_W_DYN < 120 ? 9   : 10;
+    const nc   = branchCol[n.id] || color;
     const nrgb = hexToRgb(nc);
+    const subY = y + BOX_H - 12;
 
     if (isRoot) {
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="12" fill="${color}" filter="url(#${filtId})"/>`;
-      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="14" font-weight="700" fill="white">${n.label}</text>`;
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
+      boxes += drawLabel(n.label, x, y, BOX_W_DYN, 13.5, 'white', !!n.sub);
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
     } else if (isLeaf) {
-      // Blattknoten: volle Pastellfarbe — dunkler Text lesbar auf hellem Grund
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="10" fill="${nc}" stroke="${nc}" stroke-width="1.5" filter="url(#${filtId})"/>`;
-      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsize}" font-weight="700" fill="#1a1a2e">${n.label}</text>`;
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="#374151">${n.sub}</text>`;
+      boxes += drawLabel(n.label, x, y, BOX_W_DYN, fsize, '#1a1a2e', !!n.sub);
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="#374151">${n.sub}</text>`;
     } else {
-      // Zwischenknoten: helles Tinting + farbiger Rahmen des Astes
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="10" fill="rgba(${nrgb},0.10)" stroke="${nc}" stroke-width="2" filter="url(#${filtId})"/>`;
-      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsize}" font-weight="700" fill="#111">${n.label}</text>`;
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="${nc}">${n.sub}</text>`;
+      boxes += drawLabel(n.label, x, y, BOX_W_DYN, fsize, '#111', !!n.sub);
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="${nc}">${n.sub}</text>`;
     }
   });
 
