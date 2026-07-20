@@ -1342,6 +1342,40 @@ function getCascadeForBiomarker(name) {
   return null;
 }
 
+// KI-generierte Kaskaden aus Supabase/API holen und cachen
+const _cascadeCache = {};
+async function fetchCascadeFromAI(name) {
+  if (_cascadeCache[name]) return _cascadeCache[name];
+  try {
+    const res = await fetch('/api/cascade?name=' + encodeURIComponent(name));
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (json.cascade) { _cascadeCache[name] = json.cascade; return json.cascade; }
+  } catch {}
+  return null;
+}
+
+async function loadCascadeIntoPanel(name) {
+  const panel = document.getElementById('cascadePanel');
+  if (!panel) return;
+  const existing = getCascadeForBiomarker(name);
+  if (existing) return; // bereits vorhanden, kein API-Call nötig
+  const svgWrap = document.getElementById('cascadeSvgWrap');
+  const desc = document.getElementById('cascadeDesc');
+  if (svgWrap) svgWrap.innerHTML = '<div style="text-align:center;padding:1.5rem 0;color:#9ca3af;font-size:.82rem;">ORY Velox KI generiert Kaskade…</div>';
+  const cascade = await fetchCascadeFromAI(name);
+  if (!cascade) {
+    if (svgWrap) svgWrap.innerHTML = '<div style="text-align:center;padding:1rem;color:#9ca3af;font-size:.8rem;">Keine Kaskade verfügbar</div>';
+    return;
+  }
+  // In CASCADES eintragen damit switchCascade funktioniert
+  CASCADES[name] = cascade;
+  const type = 'aufnahme';
+  if (desc) desc.textContent = cascade[type]?.desc || '';
+  if (svgWrap) svgWrap.innerHTML = buildCascadeSVG(cascade[type]?.steps, cascade[type]?.color);
+  panel.querySelectorAll('.bk-ct-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+}
+
 const LEVELS = {
   'Vitamin B12':  { low: 'Erschöpfung, Kribbeln, Gedächtnis ↓', normal: 'Nerven & DNA-Synthese intakt', high: 'Selten — Leber- oder Tumormarker prüfen' },
   'Vitamin D':    { low: 'Immunschwäche, Knochenschmerzen, Depression', normal: 'Immunschutz & Calciumhaushalt stabil', high: 'Über 150 ng/ml: Hyperkalzämie möglich' },
@@ -2748,6 +2782,10 @@ function showBiomarkerCard(b) {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
             Teilen
           </button>
+          <button class="bk-share-btn" style="background:linear-gradient(135deg,#889FFE,#6366f1);" onclick="shareBiomarkerImage('${b.name.replace(/'/g,"\\'")}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Als Bild
+          </button>
         </div>
       </div>
       <p class="bk-disclaimer">Diese Informationen ersetzen keinen Arztbesuch. Alle Angaben ohne Gewähr. Bearbeitet von <a href="https://velox.ory-berlin.de" target="_blank" style="color:var(--lila);text-decoration:none;font-weight:600;">ORY Velox KI</a> · biomarker.ory-berlin.de</p>
@@ -2756,6 +2794,103 @@ function showBiomarkerCard(b) {
   section.style.display = 'block';
   setStep(2);
   section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // KI-Kaskade nachladen falls kein statischer Eintrag
+  loadCascadeIntoPanel(b.name);
+}
+
+async function shareBiomarkerImage(name) {
+  const bm = findBiomarker(name.toLowerCase());
+  if (!bm) return;
+  let cascade = getCascadeForBiomarker(bm.name);
+  if (!cascade) cascade = await fetchCascadeFromAI(bm.name);
+  const type = 'wirkung';
+  const steps = cascade?.[type]?.steps || cascade?.aufnahme?.steps || [];
+  const color = cascade?.[type]?.color || '#889FFE';
+  const desc = cascade?.[type]?.desc || cascade?.aufnahme?.desc || '';
+
+  // Canvas aufbauen
+  const W = 600, STEP_H = 56, GAP = 18, BOX_W = 460, BOX_H = 42;
+  const headerH = 120, footerH = 80;
+  const cascadeH = steps.length * (STEP_H + GAP) - GAP + 24;
+  const H = headerH + cascadeH + footerH + 40;
+  const canvas = document.createElement('canvas');
+  canvas.width = W * 2; canvas.height = H * 2;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+
+  // Hintergrund
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, '#d5f1ef'); grad.addColorStop(1, '#ece9f4');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  // Header-Box
+  ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,.08)'; ctx.shadowBlur = 12;
+  roundRect(ctx, 20, 16, W - 40, 94, 16); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // ORY Logo + Name
+  ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
+  ctx.fillText('ORY BIOMARKER · VELOX KI', 40, 42);
+  ctx.font = 'bold 26px Inter,sans-serif';
+  ctx.fillText(bm.name, 40, 72);
+  ctx.fillStyle = color; ctx.font = '600 11px Inter,sans-serif';
+  ctx.fillText(type === 'wirkung' ? 'WIRKUNG' : 'AUFNAHME', 40, 96);
+
+  // Kaskaden-Boxen
+  let y = headerH + 8;
+  steps.forEach((step, i) => {
+    const parts = step.split('\n');
+    // Box
+    ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(136,159,254,.15)'; ctx.shadowBlur = 8;
+    roundRect(ctx, (W - BOX_W) / 2, y, BOX_W, BOX_H, 10); ctx.fill();
+    ctx.shadowBlur = 0;
+    // Linker farbiger Balken
+    ctx.fillStyle = color;
+    roundRect(ctx, (W - BOX_W) / 2, y, 4, BOX_H, 2); ctx.fill();
+    // Text
+    ctx.fillStyle = '#111'; ctx.font = 'bold 12px Inter,sans-serif';
+    ctx.fillText(parts[0], (W - BOX_W) / 2 + 16, y + (parts[1] ? 17 : 24));
+    if (parts[1]) { ctx.fillStyle = '#6b7280'; ctx.font = '500 10px Inter,sans-serif'; ctx.fillText(parts[1], (W - BOX_W) / 2 + 16, y + 32); }
+    // Pfeil
+    if (i < steps.length - 1) {
+      const ax = W / 2, ay = y + BOX_H + 4;
+      ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax, ay + GAP - 8); ctx.stroke();
+      ctx.fillStyle = color; ctx.beginPath();
+      ctx.moveTo(ax - 5, ay + GAP - 8); ctx.lineTo(ax + 5, ay + GAP - 8); ctx.lineTo(ax, ay + GAP); ctx.fill();
+    }
+    y += STEP_H + GAP;
+  });
+
+  // Footer
+  ctx.fillStyle = '#9ca3af'; ctx.font = '500 10px Inter,sans-serif';
+  const footerY = H - footerH + 20;
+  const descShort = desc.length > 90 ? desc.substring(0, 90) + '…' : desc;
+  ctx.fillText(descShort, 20, footerY);
+  ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
+  ctx.fillText('biomarker.ory-berlin.de', 20, footerY + 22);
+  ctx.fillStyle = '#9ca3af'; ctx.font = '500 10px Inter,sans-serif';
+  ctx.fillText('Alle Angaben ohne Gewähr · Kein Ersatz für ärztliche Diagnostik', 20, footerY + 38);
+
+  canvas.toBlob(async blob => {
+    const file = new File([blob], `ory-kaskade-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: `ORY Kaskade: ${bm.name}`, text: `${bm.name} – Biochemische Kaskade\nBearbeitet von ORY Velox KI\nbiomarker.ory-berlin.de` });
+    } else {
+      // Fallback: Bild herunterladen
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = file.name; a.click();
+      showShareToast('Bild gespeichert');
+    }
+  }, 'image/png');
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h); ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
 }
 
 function shareBiomarker(name) {
