@@ -3306,40 +3306,44 @@ async function shareItem(name, platform) {
 
   // Bild generieren
   const pngBlob = await generateCascadeBlob(bm);
+  const fileName = `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`;
+  const file = pngBlob ? new File([pngBlob], fileName, { type: 'image/png' }) : null;
 
-  function saveImage() {
-    if (!pngBlob) return;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(pngBlob);
-    a.download = `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`;
-    a.click();
+  if (platform === 'image') {
+    // Nur bei explizitem "Bild speichern"-Button herunterladen
+    if (pngBlob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(pngBlob);
+      a.download = fileName; a.click();
+      showShareToast('Kaskaden-Bild gespeichert');
+    }
+    _shareInProgress = false; return;
   }
 
-  if (platform === 'wa') {
-    // WhatsApp: Text via wa.me + Bild separat speichern
-    saveImage();
-    setTimeout(() => {
-      window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
-    }, 800);
-    showShareToast('Bild gespeichert · WhatsApp öffnet mit Text');
-  } else if (platform === 'li') {
+  if (platform === 'li') {
     window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://biomarker.ory-berlin.de'), '_blank');
-  } else if (platform === 'image') {
-    saveImage();
-    showShareToast('Kaskaden-Bild gespeichert');
-  } else {
-    // Nativer Share (general): Text + URL teilen, Bild speichern
-    saveImage();
-    if (navigator.share) {
-      navigator.share({
-        title: `ORY Biomarker: ${bm.name}`,
-        text: shareText,
-        url: tests[0] ? `https://ory-berlin.de/products/${tests[0].shopSlug}` : 'https://biomarker.ory-berlin.de'
-      }).catch(() => {});
-    } else {
-      navigator.clipboard?.writeText(shareText);
-      showShareToast('Text kopiert');
+    _shareInProgress = false; return;
+  }
+
+  // Nativer Share: Bild + Text — KEIN url (verhindert doppeltes Bild durch Link-Preview)
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: shareText });
+      _shareInProgress = false; return;
+    } catch(e) {
+      _shareInProgress = false;
+      if (e.name === 'AbortError') return;
     }
+  }
+
+  // Fallback (Desktop / kein File-Share): Text in Zwischenablage
+  if (platform === 'wa') {
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+  } else if (navigator.share) {
+    navigator.share({ title: `ORY: ${bm.name}`, text: shareText }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(shareText);
+    showShareToast('Text kopiert');
   }
   _shareInProgress = false;
 }
