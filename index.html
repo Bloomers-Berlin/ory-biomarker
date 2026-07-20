@@ -1333,11 +1333,20 @@ function buildCascadeSVG(steps, accentColor) {
 
 function getCascadeForBiomarker(name) {
   if (!name) return null;
-  const n = name.toLowerCase();
+  const n = name.toLowerCase().trim();
+  // 1. Exact match
   for (const [key, val] of Object.entries(CASCADES)) {
-    if (n.includes(key.toLowerCase()) || key.toLowerCase().includes(n.split(' ')[0].toLowerCase())) {
-      return val;
-    }
+    if (n === key.toLowerCase().trim()) return val;
+  }
+  // 2. Biomarker name fully contains key (e.g. "Serotonin (Vollblut)" contains "Serotonin")
+  for (const [key, val] of Object.entries(CASCADES)) {
+    const k = key.toLowerCase().trim();
+    if (n === k || n.startsWith(k + ' ') || n.startsWith(k + '-')) return val;
+  }
+  // 3. Key fully contains biomarker name
+  for (const [key, val] of Object.entries(CASCADES)) {
+    const k = key.toLowerCase().trim();
+    if (k === n || k.startsWith(n + ' ') || k.startsWith(n + '-')) return val;
   }
   return null;
 }
