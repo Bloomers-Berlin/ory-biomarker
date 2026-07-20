@@ -843,7 +843,7 @@
       border: 1.5px solid var(--border);
       padding: 1rem 1.2rem;
     }
-    #cascadeSvgWrap { max-width: 240px; margin: 0 auto; }
+    #cascadeSvgWrap { max-width: 480px; margin: 0 auto; }
     .bk-cascade-title {
       font-size: 13px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--muted); margin-bottom: .4rem;
@@ -1602,7 +1602,17 @@ function buildCascadeSVG(steps, accentColor) {
 function buildBranchCascadeSVG(nodes, accentColor) {
   if (!nodes || !nodes.length) return '';
   const color = accentColor || '#889FFE';
-  const BOX_W = 95, BOX_H = 32, H_UNIT = 110, V_GAP = 38;
+
+  // Hex → RGB helper für transparente Fills
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `${r},${g},${b}`;
+  }
+  const rgb = hexToRgb(color);
+  const lightFill = `rgba(${rgb},0.10)`;
+  const midFill   = `rgba(${rgb},0.18)`;
+
+  const BOX_W = 148, BOX_H = 52, H_UNIT = 174, V_GAP = 64;
 
   // Baum aufbauen
   const childMap = {};
@@ -1611,13 +1621,11 @@ function buildBranchCascadeSVG(nodes, accentColor) {
   nodes.forEach(n => { if (n.parent && childMap[n.parent]) childMap[n.parent].push(n); });
   if (!root) return '';
 
-  // Breite jedes Teilbaums in Einheiten
   function treeW(id) {
     const kids = childMap[id] || [];
     return kids.length ? kids.reduce((s,k) => s + treeW(k.id), 0) : 1;
   }
 
-  // Positionen berechnen
   const pos = {};
   function layout(id, x, y) {
     pos[id] = {x, y};
@@ -1633,23 +1641,30 @@ function buildBranchCascadeSVG(nodes, accentColor) {
   }
 
   const totalW = treeW(root.id);
-  const svgW = Math.max(280, totalW * H_UNIT + 40);
-  layout(root.id, svgW / 2, 20);
+  const PAD = 30;
+  const svgW = Math.max(320, totalW * H_UNIT + PAD * 2);
+  layout(root.id, svgW / 2, PAD);
 
   let maxY = 0;
   Object.values(pos).forEach(p => { if (p.y > maxY) maxY = p.y; });
-  const svgH = maxY + BOX_H + 24;
+  const svgH = maxY + BOX_H + PAD;
+
+  // Pfeilspitze-Definition
+  const defs = `<defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M1,1 L7,4 L1,7 Z" fill="${color}" opacity="0.8"/>
+    </marker>
+  </defs>`;
 
   let edges = '', boxes = '';
 
-  // Kanten (Bézier-Kurven mit Pfeil)
+  // Kanten mit Pfeilspitzen
   nodes.forEach(n => {
     if (!n.parent || !pos[n.parent] || !pos[n.id]) return;
     const px = pos[n.parent].x, py = pos[n.parent].y + BOX_H;
     const cx = pos[n.id].x,   cy = pos[n.id].y;
     const my = (py + cy) / 2;
-    edges += `<path d="M${px},${py} C${px},${my} ${cx},${my} ${cx},${cy-6}" fill="none" stroke="${color}" stroke-width="1.8" opacity="0.55"/>`;
-    edges += `<polygon points="${cx-5},${cy-9} ${cx+5},${cy-9} ${cx},${cy-2}" fill="${color}" opacity="0.7"/>`;
+    edges += `<path d="M${px},${py} C${px},${my} ${cx},${my} ${cx},${cy}" fill="none" stroke="${color}" stroke-width="2" opacity="0.6" marker-end="url(#arr)"/>`;
   });
 
   // Boxen
@@ -1658,20 +1673,23 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     const {x, y} = pos[n.id];
     const bx = x - BOX_W / 2;
     const isRoot = !n.parent;
-    const fill = isRoot ? color : 'white';
-    const stroke = color;
-    const textFill = isRoot ? 'white' : '#111';
-    const subFill = isRoot ? 'rgba(255,255,255,0.75)' : '#6b7280';
-    boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="1.4"/>`;
-    if (n.sub) {
-      boxes += `<text x="${x}" y="${y+13}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
-      boxes += `<text x="${x}" y="${y+24}" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="${subFill}">${n.sub}</text>`;
+
+    if (isRoot) {
+      // Wurzelknoten: vollständig farbiger Hintergrund mit Schatten-Effekt
+      boxes += `<rect x="${bx+2}" y="${y+3}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="rgba(${rgb},0.25)"/>`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${color}" stroke="${color}" stroke-width="0"/>`;
+      boxes += `<text x="${x}" y="${y+20}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="white" letter-spacing="0.2">${n.label}</text>`;
+      if (n.sub) boxes += `<text x="${x}" y="${y+36}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
     } else {
-      boxes += `<text x="${x}" y="${y+19}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
+      // Kind-Knoten: heller Farbhintergrund + farbiger Rand (wie im Foto)
+      boxes += `<rect x="${bx+2}" y="${y+3}" width="${BOX_W}" height="${BOX_H}" rx="9" fill="rgba(${rgb},0.12)"/>`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="9" fill="${lightFill}" stroke="${color}" stroke-width="2"/>`;
+      boxes += `<text x="${x}" y="${y+20}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#111" letter-spacing="0.1">${n.label}</text>`;
+      if (n.sub) boxes += `<text x="${x}" y="${y+36}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="${color}">${n.sub}</text>`;
     }
   });
 
-  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${edges}${boxes}</svg>`;
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${defs}${edges}${boxes}</svg>`;
 }
 
 // Wählt automatisch den richtigen Renderer
