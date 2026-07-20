@@ -3267,10 +3267,13 @@ async function shareItem(name, platform) {
   const pngBlob = await generateCascadeBlob(bm);
   const file = pngBlob ? new File([pngBlob], `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`, { type: 'image/png' }) : null;
 
-  // Web Share API: NUR files + title + text — KEIN url (verhindert doppeltes Bild durch Link-Preview)
+  // Web Share API: NUR Bild — kein text/url (verhindert doppeltes Bild durch WA-Link-Preview)
+  // Text wird gleichzeitig in die Zwischenablage kopiert → nach dem Bild einfügen
   if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: shareText });
+      await navigator.clipboard.writeText(shareText).catch(() => {});
+      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}` });
+      showShareToast('Text kopiert — nach dem Bild einfügen');
       return;
     } catch(e) { if (e.name === 'AbortError') return; }
   }
