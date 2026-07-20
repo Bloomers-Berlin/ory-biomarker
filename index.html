@@ -3225,9 +3225,12 @@ function showBiomarkerCard(b) {
 }
 
 // ── SHARE: Bild + Text, alle Plattformen ─────────────────────────────────
+let _shareInProgress = false;
 async function shareItem(name, platform) {
+  if (_shareInProgress) return;
+  _shareInProgress = true;
   const bm = findBiomarker(name.toLowerCase()) || findBiomarker(name);
-  if (!bm) { showShareToast('Biomarker nicht gefunden'); return; }
+  if (!bm) { _shareInProgress = false; showShareToast('Biomarker nicht gefunden'); return; }
   showShareToast('Wird vorbereitet…');
 
   // Alle zugehörigen Tests (bis zu 3)
@@ -3267,15 +3270,17 @@ async function shareItem(name, platform) {
   const pngBlob = await generateCascadeBlob(bm);
   const file = pngBlob ? new File([pngBlob], `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`, { type: 'image/png' }) : null;
 
-  // Web Share API: NUR Bild — kein text/url (verhindert doppeltes Bild durch WA-Link-Preview)
-  // Text wird gleichzeitig in die Zwischenablage kopiert → nach dem Bild einfügen
+  // Web Share API: NUR Bild teilen + Text parallel in Zwischenablage
   if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
       await navigator.clipboard.writeText(shareText).catch(() => {});
       await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}` });
-      showShareToast('Text kopiert — nach dem Bild einfügen');
-      return;
-    } catch(e) { if (e.name === 'AbortError') return; }
+      showShareToast('Bild geteilt · Text in Zwischenablage — einfügen!');
+      _shareInProgress = false; return;
+    } catch(e) {
+      _shareInProgress = false;
+      if (e.name === 'AbortError') return;
+    }
   }
 
   // Fallback je Plattform
@@ -3295,6 +3300,7 @@ async function shareItem(name, platform) {
     a.download = file.name; a.click();
     showShareToast('Bild gespeichert');
   }
+  _shareInProgress = false;
 }
 
 async function generateCascadeBlob(bm) {
@@ -3335,9 +3341,17 @@ async function generateCascadeBlob(bm) {
     const aufDims = getSvgDims(aufSvg);
     const wirDims = wirSvg ? getSvgDims(wirSvg) : { w: 1, h: 1 };
 
+    // Cofaktoren + Tests für Footer
+    const allNodes2 = [...(aufDir.nodes||[]), ...(wirDir?.nodes||[])];
+    const cofactors2 = [...new Set(allNodes2.map(n=>n.via).filter(Boolean))].slice(0,5);
+    const tests2 = (bm.foundIn||[]).map(fi=>TESTS.find(t=>t.id===fi.id)).filter(Boolean).slice(0,3);
+    const cofText = cofactors2.length ? 'Cofaktoren: ' + cofactors2.join(' · ') : '';
+    const testLines2 = tests2.map(t=>`${t.name} · ${t.price}  ory-berlin.de/products/${t.shopSlug}`);
+
     // Canvas-Layout
     const SCALE = 2, W = 820, PAD = 22;
-    const headerH = 88, labelH = 28, footerH = descLines.length * 17 + 50;
+    const footerLineCount = descLines.length + (cofText?1:0) + testLines2.length + 2;
+    const headerH = 88, labelH = 28, footerH = footerLineCount * 17 + 30;
     const colW = hasTwo ? Math.floor((W - PAD * 3) / 2) : W - PAD * 2;
     const aufRH = Math.round((aufDims.h / aufDims.w) * colW);
     const wirRH = hasTwo ? Math.round((wirDims.h / wirDims.w) * colW) : 0;
@@ -3386,15 +3400,30 @@ async function generateCascadeBlob(bm) {
     await drawCol(aufSvg, aufDims, PAD, aufRH, '⬇  AUFNAHME');
     if (hasTwo && wirSvg) await drawCol(wirSvg, wirDims, PAD * 2 + colW, wirRH, '⚙  WIRKUNG');
 
-    // Footer: 2 vollständige Sätze + URL
+    // Footer: Beschreibung + Cofaktoren + Tests + Links
     const fy0 = sectionY + labelH + cascadeH + 26;
-    ctx.fillStyle = '#374151'; ctx.font = '500 12px Inter,sans-serif';
     let fy = fy0;
+    // Beschreibung
+    ctx.fillStyle = '#374151'; ctx.font = '500 12px Inter,sans-serif';
     descLines.forEach(l => { ctx.fillText(l, PAD, fy); fy += 17; });
+    // Cofaktoren
+    if (cofText) {
+      fy += 4;
+      ctx.fillStyle = '#6366f1'; ctx.font = '600 11px Inter,sans-serif';
+      ctx.fillText(cofText, PAD, fy); fy += 18;
+    }
+    // Produkt-Links
+    if (testLines2.length) {
+      fy += 2;
+      ctx.fillStyle = '#111'; ctx.font = '600 10.5px Inter,sans-serif';
+      testLines2.forEach(l => { ctx.fillText('🔬 ' + l, PAD, fy); fy += 16; });
+    }
+    // Site-Links
+    fy += 6;
     ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
-    ctx.fillText('biomarker.ory-berlin.de', PAD, fy + 14);
+    ctx.fillText('biomarker.ory-berlin.de  ·  ory-berlin.de/velox', PAD, fy);
     ctx.fillStyle = '#9ca3af'; ctx.font = '500 9px Inter,sans-serif';
-    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', PAD + 210, fy + 14);
+    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', W - PAD - 240, fy);
 
     return await new Promise(res => canvas.toBlob(res, 'image/png'));
   } catch(e) { console.error('blob:', e); return null; }
