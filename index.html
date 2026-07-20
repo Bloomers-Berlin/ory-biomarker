@@ -1113,6 +1113,7 @@
     <span onclick="quickSearch('Cortisol')">Cortisol</span>
     <span onclick="quickSearch('SIBO')">SIBO</span>
     <span onclick="quickSearch('Histamin')">Histamin</span>
+    <span onclick="quickSearch('Vollblutmineralanalyse')">Vollblut-Mineralien</span>
   </p>
   <div id="sfToggleWrap" style="margin-top:1rem;display:none">
     <button onclick="toggleSF()" id="sfToggleBtn" style="display:inline-flex;align-items:center;gap:.5rem;background:none;border:1.5px solid var(--border);border-radius:2rem;padding:.5rem 1.2rem;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;color:var(--black);transition:border-color .15s;">
@@ -3245,7 +3246,7 @@ function runSymptomFinder() {
     const pct = total > 0 ? Math.round((matched / total) * 100) : 0;
     const matchCount = BIOMARKERS.filter(b => b.symptoms.some(s => sfTags.includes(s)) && b.foundIn.some(f => f.id === t.id)).length;
     return { t, pct, matchCount };
-  }).filter(s => s.pct > 0).sort((a, b) => b.pct - a.pct).slice(0, 4);
+  }).filter(s => s.pct > 0).sort((a, b) => b.pct - a.pct).slice(0, 5);
 
   const cards = scores.map(s => {
     const isHigh = s.pct >= 55;
