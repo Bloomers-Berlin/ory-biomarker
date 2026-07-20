@@ -1307,6 +1307,7 @@ const CASCADES = {
   },
 };
 
+// ── LINEAR CASCADE (statische Kaskaden, rückwärtskompatibel) ──────────────
 function buildCascadeSVG(steps, accentColor) {
   const color = accentColor || '#889FFE';
   const boxW = 230, boxH = 50, gap = 22, x0 = 11, totalH = steps.length * boxH + (steps.length - 1) * gap + 20;
@@ -1329,6 +1330,90 @@ function buildCascadeSVG(steps, accentColor) {
   });
   svg += '</svg>';
   return svg;
+}
+
+// ── BRANCHING CASCADE (KI-generiert, verzweigt) ───────────────────────────
+function buildBranchCascadeSVG(nodes, accentColor) {
+  if (!nodes || !nodes.length) return '';
+  const color = accentColor || '#889FFE';
+  const BOX_W = 155, BOX_H = 48, H_UNIT = 175, V_GAP = 60;
+
+  // Baum aufbauen
+  const childMap = {};
+  let root = null;
+  nodes.forEach(n => { childMap[n.id] = []; if (!n.parent) root = n; });
+  nodes.forEach(n => { if (n.parent && childMap[n.parent]) childMap[n.parent].push(n); });
+  if (!root) return '';
+
+  // Breite jedes Teilbaums in Einheiten
+  function treeW(id) {
+    const kids = childMap[id] || [];
+    return kids.length ? kids.reduce((s,k) => s + treeW(k.id), 0) : 1;
+  }
+
+  // Positionen berechnen
+  const pos = {};
+  function layout(id, x, y) {
+    pos[id] = {x, y};
+    const kids = childMap[id] || [];
+    if (!kids.length) return;
+    const total = kids.reduce((s,k) => s + treeW(k.id), 0);
+    let cx = x - (total / 2) * H_UNIT + H_UNIT / 2;
+    kids.forEach(k => {
+      const w = treeW(k.id);
+      layout(k.id, cx + (w - 1) * H_UNIT / 2, y + BOX_H + V_GAP);
+      cx += w * H_UNIT;
+    });
+  }
+
+  const totalW = treeW(root.id);
+  const svgW = Math.max(280, totalW * H_UNIT + 40);
+  layout(root.id, svgW / 2, 20);
+
+  let maxY = 0;
+  Object.values(pos).forEach(p => { if (p.y > maxY) maxY = p.y; });
+  const svgH = maxY + BOX_H + 24;
+
+  let edges = '', boxes = '';
+
+  // Kanten (Bézier-Kurven mit Pfeil)
+  nodes.forEach(n => {
+    if (!n.parent || !pos[n.parent] || !pos[n.id]) return;
+    const px = pos[n.parent].x, py = pos[n.parent].y + BOX_H;
+    const cx = pos[n.id].x,   cy = pos[n.id].y;
+    const my = (py + cy) / 2;
+    edges += `<path d="M${px},${py} C${px},${my} ${cx},${my} ${cx},${cy-6}" fill="none" stroke="${color}" stroke-width="1.8" opacity="0.55"/>`;
+    edges += `<polygon points="${cx-5},${cy-9} ${cx+5},${cy-9} ${cx},${cy-2}" fill="${color}" opacity="0.7"/>`;
+  });
+
+  // Boxen
+  nodes.forEach(n => {
+    if (!pos[n.id]) return;
+    const {x, y} = pos[n.id];
+    const bx = x - BOX_W / 2;
+    const isRoot = !n.parent;
+    const fill = isRoot ? color : 'white';
+    const stroke = color;
+    const textFill = isRoot ? 'white' : '#111';
+    const subFill = isRoot ? 'rgba(255,255,255,0.75)' : '#6b7280';
+    boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="1.8"/>`;
+    if (n.sub) {
+      boxes += `<text x="${x}" y="${y+19}" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
+      boxes += `<text x="${x}" y="${y+35}" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="${subFill}">${n.sub}</text>`;
+    } else {
+      boxes += `<text x="${x}" y="${y+28}" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
+    }
+  });
+
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${edges}${boxes}</svg>`;
+}
+
+// Wählt automatisch den richtigen Renderer
+function renderCascadeSVG(cascadeDir) {
+  if (!cascadeDir) return '';
+  if (cascadeDir.nodes) return buildBranchCascadeSVG(cascadeDir.nodes, cascadeDir.color);
+  if (cascadeDir.steps) return buildCascadeSVG(cascadeDir.steps, cascadeDir.color);
+  return '';
 }
 
 function getCascadeForBiomarker(name) {
@@ -1381,7 +1466,7 @@ async function loadCascadeIntoPanel(name) {
   CASCADES[name] = cascade;
   const type = 'aufnahme';
   if (desc) desc.textContent = cascade[type]?.desc || '';
-  if (svgWrap) svgWrap.innerHTML = buildCascadeSVG(cascade[type]?.steps, cascade[type]?.color);
+  if (svgWrap) svgWrap.innerHTML = renderCascadeSVG(cascade[type]);
   panel.querySelectorAll('.bk-ct-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
 }
 
@@ -1422,7 +1507,7 @@ function switchCascade(type, btn) {
   const c = getCascadeForBiomarker(bkName);
   if (!c || !c[type]) return;
   document.getElementById('cascadeDesc').textContent = c[type].desc || '';
-  document.getElementById('cascadeSvgWrap').innerHTML = buildCascadeSVG(c[type].steps, c[type].color);
+  document.getElementById('cascadeSvgWrap').innerHTML = renderCascadeSVG(c[type]);
   panel.querySelectorAll('.bk-ct-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
 }
 
@@ -2739,7 +2824,7 @@ function showBiomarkerCard(b) {
       ${toggleHtml}
       ${lvlHtml}
       <div class="bk-cascade-desc" id="cascadeDesc">${first.desc || ''}</div>
-      <div id="cascadeSvgWrap">${buildCascadeSVG(first.steps, first.color)}</div>
+      <div id="cascadeSvgWrap">${renderCascadeSVG(first)}</div>
     </div>`;
   })() : `<div class="bk-cascade-panel" id="cascadePanel" data-bk="${b.name}">
       <div class="bk-cascade-title">Biochemische Kaskade</div>
