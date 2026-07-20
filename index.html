@@ -3325,8 +3325,11 @@ async function shareItem(name, platform) {
     _shareInProgress = false; return;
   }
 
-  // Nativer Share: Bild + Text — KEIN url (verhindert doppeltes Bild durch Link-Preview)
-  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+  // Mobil-Erkennung: iOS/Android → nativer File-Share; macOS/Desktop → Download + Text
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (isMobile && file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    // iOS/Android: nativer Share-Sheet mit Bild + Text (kein url → kein doppeltes Bild)
     try {
       await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: shareText });
       _shareInProgress = false; return;
@@ -3336,14 +3339,19 @@ async function shareItem(name, platform) {
     }
   }
 
-  // Fallback (Desktop / kein File-Share): Text in Zwischenablage
+  // Desktop/macOS: Bild herunterladen + Text in Zwischenablage kopieren
+  if (pngBlob) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(pngBlob);
+    a.download = fileName; a.click();
+  }
+  await navigator.clipboard.writeText(shareText).catch(() => {});
+
   if (platform === 'wa') {
-    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
-  } else if (navigator.share) {
-    navigator.share({ title: `ORY: ${bm.name}`, text: shareText }).catch(() => {});
+    setTimeout(() => window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank'), 400);
+    showShareToast('Bild gespeichert · Text kopiert · WA öffnet');
   } else {
-    navigator.clipboard?.writeText(shareText);
-    showShareToast('Text kopiert');
+    showShareToast('Bild gespeichert · Text in Zwischenablage');
   }
   _shareInProgress = false;
 }
