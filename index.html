@@ -3249,11 +3249,13 @@ let _shareInProgress = false;
 async function shareItem(name, platform) {
   if (_shareInProgress) return;
   _shareInProgress = true;
+  setTimeout(() => { _shareInProgress = false; }, 4000);
+
   const bm = findBiomarker(name.toLowerCase()) || findBiomarker(name);
   if (!bm) { _shareInProgress = false; showShareToast('Biomarker nicht gefunden'); return; }
   showShareToast('Wird vorbereitet…');
 
-  // Alle zugehörigen Tests (bis zu 3)
+  // Tests (bis zu 3)
   const tests = (bm.foundIn || []).map(fi => TESTS.find(t => t.id === fi.id)).filter(Boolean).slice(0, 3);
 
   // Beschreibung: 2 vollständige Sätze
@@ -3261,64 +3263,64 @@ async function shareItem(name, platform) {
   const sents = descFull.match(/[^.!?]*[.!?]+/g) || [descFull];
   const twoSentences = sents.slice(0, 2).join(' ').trim();
 
-  // Cofaktoren aus der Kaskade extrahieren
-  const cascade = getCascadeForBiomarker(bm.name);
-  const allNodes = [
-    ...((cascade?.aufnahme?.nodes || cascade?.nodes || [])),
-    ...((cascade?.wirkung?.nodes || []))
-  ];
+  // Cofaktoren aus der Kaskade
+  const casc = getCascadeForBiomarker(bm.name);
+  const allNodes = [...(casc?.aufnahme?.nodes || casc?.nodes || []), ...(casc?.wirkung?.nodes || [])];
   const cofactors = [...new Set(allNodes.map(n => n.via).filter(Boolean))].slice(0, 5);
 
-  // Sharetext aufbauen
+  // Sharetext (reiner Text — kein Bild eingebettet)
   const productLines = tests.map(t => `🔬 ${t.name} · ${t.price}\n   https://ory-berlin.de/products/${t.shopSlug}`).join('\n');
   const cofLine = cofactors.length ? `\nWichtige Cofaktoren: ${cofactors.join(' · ')}` : '';
   const shareText = [
-    `${bm.name} – ORY Biomarker`,
+    `*${bm.name}* – ORY Biomarker`,
     '',
     twoSentences,
     cofLine,
     '',
-    productLines || '🔬 biomarker.ory-berlin.de',
+    productLines || '',
     '',
-    '📊 biomarker.ory-berlin.de',
-    '⚡ ory-berlin.de/velox',
+    '📊 https://biomarker.ory-berlin.de',
+    '⚡ https://ory-berlin.de/velox',
     '',
-    'Kein Ersatz für ärztliche Beratung.'
-  ].join('\n');
+    '_Kein Ersatz für ärztliche Beratung._'
+  ].filter(l => l !== undefined).join('\n');
 
   // Bild generieren
   const pngBlob = await generateCascadeBlob(bm);
-  const file = pngBlob ? new File([pngBlob], `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`, { type: 'image/png' }) : null;
 
-  // Web Share API: NUR Bild teilen + Text parallel in Zwischenablage
-  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-    try {
-      await navigator.clipboard.writeText(shareText).catch(() => {});
-      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}` });
-      showShareToast('Bild geteilt · Text in Zwischenablage — einfügen!');
-      _shareInProgress = false; return;
-    } catch(e) {
-      _shareInProgress = false;
-      if (e.name === 'AbortError') return;
-    }
+  function saveImage() {
+    if (!pngBlob) return;
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(pngBlob);
+    a.download = `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`;
+    a.click();
   }
 
-  // Fallback je Plattform
-  const fallbackUrl = tests[0] ? `https://ory-berlin.de/products/${tests[0].shopSlug}` : 'https://biomarker.ory-berlin.de';
   if (platform === 'wa') {
-    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+    // WhatsApp: Text via wa.me + Bild separat speichern
+    saveImage();
+    setTimeout(() => {
+      window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+    }, 800);
+    showShareToast('Bild gespeichert · WhatsApp öffnet mit Text');
   } else if (platform === 'li') {
     window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://biomarker.ory-berlin.de'), '_blank');
-  } else if (navigator.share) {
-    navigator.share({ title: `ORY: ${bm.name}`, text: shareText, url: fallbackUrl }).catch(() => {});
+  } else if (platform === 'image') {
+    saveImage();
+    showShareToast('Kaskaden-Bild gespeichert');
   } else {
-    navigator.clipboard?.writeText(shareText);
-    showShareToast('In Zwischenablage kopiert');
-  }
-  if (platform === 'image' && file) {
-    const a = document.createElement('a'); a.href = URL.createObjectURL(pngBlob);
-    a.download = file.name; a.click();
-    showShareToast('Bild gespeichert');
+    // Nativer Share (general): Text + URL teilen, Bild speichern
+    saveImage();
+    if (navigator.share) {
+      navigator.share({
+        title: `ORY Biomarker: ${bm.name}`,
+        text: shareText,
+        url: tests[0] ? `https://ory-berlin.de/products/${tests[0].shopSlug}` : 'https://biomarker.ory-berlin.de'
+      }).catch(() => {});
+    } else {
+      navigator.clipboard?.writeText(shareText);
+      showShareToast('Text kopiert');
+    }
   }
   _shareInProgress = false;
 }
