@@ -843,6 +843,7 @@
       border: 1.5px solid var(--border);
       padding: 1rem 1.2rem;
     }
+    #cascadeSvgWrap { max-width: 240px; margin: 0 auto; }
     .bk-cascade-title {
       font-size: 13px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--muted); margin-bottom: .4rem;
@@ -1310,22 +1311,22 @@ const CASCADES = {
 // ── LINEAR CASCADE (statische Kaskaden, rückwärtskompatibel) ──────────────
 function buildCascadeSVG(steps, accentColor) {
   const color = accentColor || '#889FFE';
-  const boxW = 230, boxH = 50, gap = 22, x0 = 11, totalH = steps.length * boxH + (steps.length - 1) * gap + 20;
-  let svg = `<svg viewBox="0 0 252 ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 auto;">`;
+  const boxW = 145, boxH = 34, gap = 15, x0 = 8, totalH = steps.length * boxH + (steps.length - 1) * gap + 16;
+  let svg = `<svg viewBox="0 0 162 ${totalH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:280px;display:block;margin:0 auto;">`;
   steps.forEach((step, i) => {
-    const y = 10 + i * (boxH + gap);
+    const y = 8 + i * (boxH + gap);
     const [l1, l2] = step.split('\n');
-    svg += `<rect x="${x0}" y="${y}" width="${boxW}" height="${boxH}" rx="10" fill="white" stroke="${color}" stroke-width="1.5"/>`;
+    svg += `<rect x="${x0}" y="${y}" width="${boxW}" height="${boxH}" rx="7" fill="white" stroke="${color}" stroke-width="1.4"/>`;
     if (l2) {
-      svg += `<text x="${x0+boxW/2}" y="${y+20}" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#111">${l1}</text>`;
-      svg += `<text x="${x0+boxW/2}" y="${y+37}" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#6b7280">${l2}</text>`;
+      svg += `<text x="${x0+boxW/2}" y="${y+13}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#111">${l1}</text>`;
+      svg += `<text x="${x0+boxW/2}" y="${y+25}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" fill="#6b7280">${l2}</text>`;
     } else {
-      svg += `<text x="${x0+boxW/2}" y="${y+30}" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#111">${step}</text>`;
+      svg += `<text x="${x0+boxW/2}" y="${y+20}" text-anchor="middle" font-family="Inter,sans-serif" font-size="9.5" font-weight="700" fill="#111">${step}</text>`;
     }
     if (i < steps.length - 1) {
       const ay = y + boxH + 2;
-      svg += `<line x1="${x0+boxW/2}" y1="${ay}" x2="${x0+boxW/2}" y2="${ay+gap-8}" stroke="${color}" stroke-width="2"/>`;
-      svg += `<polygon points="${x0+boxW/2-6},${ay+gap-9} ${x0+boxW/2+6},${ay+gap-9} ${x0+boxW/2},${ay+gap-2}" fill="${color}"/>`;
+      svg += `<line x1="${x0+boxW/2}" y1="${ay}" x2="${x0+boxW/2}" y2="${ay+gap-6}" stroke="${color}" stroke-width="1.5"/>`;
+      svg += `<polygon points="${x0+boxW/2-4},${ay+gap-7} ${x0+boxW/2+4},${ay+gap-7} ${x0+boxW/2},${ay+gap-1}" fill="${color}"/>`;
     }
   });
   svg += '</svg>';
@@ -1336,7 +1337,7 @@ function buildCascadeSVG(steps, accentColor) {
 function buildBranchCascadeSVG(nodes, accentColor) {
   if (!nodes || !nodes.length) return '';
   const color = accentColor || '#889FFE';
-  const BOX_W = 155, BOX_H = 48, H_UNIT = 175, V_GAP = 60;
+  const BOX_W = 95, BOX_H = 32, H_UNIT = 110, V_GAP = 38;
 
   // Baum aufbauen
   const childMap = {};
@@ -1396,12 +1397,12 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     const stroke = color;
     const textFill = isRoot ? 'white' : '#111';
     const subFill = isRoot ? 'rgba(255,255,255,0.75)' : '#6b7280';
-    boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="1.8"/>`;
+    boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="7" fill="${fill}" stroke="${stroke}" stroke-width="1.4"/>`;
     if (n.sub) {
-      boxes += `<text x="${x}" y="${y+19}" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
-      boxes += `<text x="${x}" y="${y+35}" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" fill="${subFill}">${n.sub}</text>`;
+      boxes += `<text x="${x}" y="${y+13}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
+      boxes += `<text x="${x}" y="${y+24}" text-anchor="middle" font-family="Inter,sans-serif" font-size="7.5" fill="${subFill}">${n.sub}</text>`;
     } else {
-      boxes += `<text x="${x}" y="${y+28}" text-anchor="middle" font-family="Inter,sans-serif" font-size="12.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
+      boxes += `<text x="${x}" y="${y+19}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8.5" font-weight="700" fill="${textFill}">${n.label}</text>`;
     }
   });
 
@@ -2753,7 +2754,11 @@ const BIOMARKERS = [
 function findBiomarker(query) {
   if (!query || query.length < 2) return null;
   const q = query.toLowerCase().trim();
-  return BIOMARKERS.find(b => b.aliases.some(a => a.includes(q) || q.includes(a)));
+  return BIOMARKERS.find(b =>
+    b.name.toLowerCase() === q ||
+    b.name.toLowerCase().includes(q) ||
+    (b.aliases || []).some(a => a.includes(q) || q.includes(a))
+  );
 }
 
 function showBiomarkerCard(b) {
@@ -2884,7 +2889,7 @@ function showBiomarkerCard(b) {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
             Teilen
           </button>
-          <button class="bk-share-btn" style="background:linear-gradient(135deg,#889FFE,#6366f1);" onclick="shareBiomarkerImage('${b.name.replace(/'/g,"\\'")}')">
+          <button class="bk-share-btn" style="background:linear-gradient(135deg,#889FFE,#6366f1);" onclick="shareItem('${b.name.replace(/'/g,"\\'")}','image')">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             Als Bild
           </button>
@@ -2898,6 +2903,105 @@ function showBiomarkerCard(b) {
   section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   // KI-Kaskade nachladen falls kein statischer Eintrag
   loadCascadeIntoPanel(b.name);
+}
+
+// ── SHARE: Bild + Text, alle Plattformen ─────────────────────────────────
+async function shareItem(name, platform) {
+  const bm = findBiomarker(name.toLowerCase()) || findBiomarker(name);
+  if (!bm) { showShareToast('Biomarker nicht gefunden'); return; }
+  showShareToast('Wird vorbereitet…');
+
+  // Kurztext + Produktlink
+  const test = (bm.foundIn || []).map(fi => TESTS.find(t => t.id === fi.id)).filter(Boolean)[0];
+  const productUrl = test ? `https://ory-berlin.de/products/${test.shopSlug}` : 'https://biomarker.ory-berlin.de';
+  const shortDesc = bm.desc ? bm.desc.substring(0, 120) + (bm.desc.length > 120 ? '…' : '') : '';
+  const shareText = `${bm.name}\n${shortDesc}\n\n🔬 ${test ? test.name + ' · ' + test.price + '\n' + productUrl : 'biomarker.ory-berlin.de'}\n\nKein Ersatz für ärztliche Beratung.`;
+
+  // Bild generieren
+  const pngBlob = await generateCascadeBlob(bm);
+  const file = pngBlob ? new File([pngBlob], `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`, { type: 'image/png' }) : null;
+
+  // Web Share API (funktioniert auf iOS/Android für WA, Signal, etc.)
+  if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: shareText });
+      return;
+    } catch(e) { if (e.name === 'AbortError') return; }
+  }
+
+  // Fallback je Plattform
+  if (platform === 'wa') {
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank');
+  } else if (platform === 'li') {
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(productUrl) + '&summary=' + encodeURIComponent(bm.name + ' – ' + shortDesc.substring(0,100)), '_blank');
+  } else if (navigator.share) {
+    navigator.share({ title: `ORY: ${bm.name}`, text: shareText, url: productUrl }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(shareText + '\n' + productUrl);
+    showShareToast('In Zwischenablage kopiert');
+  }
+  // Desktop-Fallback für "Als Bild"-Button: Bild herunterladen
+  if (platform === 'image' && file) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(pngBlob);
+    a.download = file.name; a.click();
+    showShareToast('Bild gespeichert');
+  }
+}
+
+async function generateCascadeBlob(bm) {
+  try {
+    let cascade = getCascadeForBiomarker(bm.name);
+    if (!cascade) cascade = await fetchCascadeFromAI(bm.name);
+    const type = cascade?.wirkung ? 'wirkung' : 'aufnahme';
+    const cascadeDir = cascade?.[type] || cascade?.aufnahme;
+    const color = cascadeDir?.color || '#889FFE';
+    const desc = cascadeDir?.desc || '';
+
+    const svgStr = renderCascadeSVG(cascadeDir);
+    const vbMatch = svgStr.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+    const svgNatW = vbMatch ? parseFloat(vbMatch[1]) : 420;
+    const svgNatH = vbMatch ? parseFloat(vbMatch[2]) : 400;
+
+    const W = 640, headerH = 118, footerH = 72;
+    const renderW = W - 40;
+    const renderH = Math.round((svgNatH / svgNatW) * renderW);
+    const H = headerH + renderH + footerH + 24;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = W * 2; canvas.height = H * 2;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(2, 2);
+
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#d5f1ef'); grad.addColorStop(1, '#ece9f4');
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = '#ffffff'; ctx.shadowColor = 'rgba(0,0,0,.08)'; ctx.shadowBlur = 12;
+    roundRect(ctx, 20, 14, W - 40, 90, 14); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
+    ctx.fillText('ORY BIOMARKER · VELOX KI', 38, 40);
+    ctx.font = 'bold 26px Inter,sans-serif'; ctx.fillText(bm.name, 38, 70);
+    ctx.fillStyle = color; ctx.font = '700 10px Inter,sans-serif';
+    ctx.fillText(type === 'wirkung' ? '⚙ WIRKUNG' : '⬇ AUFNAHME', 38, 92);
+
+    await new Promise(resolve => {
+      const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => { ctx.drawImage(img, 20, headerH, renderW, renderH); URL.revokeObjectURL(url); resolve(); };
+      img.onerror = resolve; img.src = url;
+    });
+
+    const footerY = headerH + renderH + 10;
+    ctx.fillStyle = '#9ca3af'; ctx.font = '500 9px Inter,sans-serif';
+    ctx.fillText(desc.substring(0, 95) + (desc.length > 95 ? '…' : ''), 20, footerY);
+    ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
+    ctx.fillText('biomarker.ory-berlin.de', 20, footerY + 18);
+    ctx.fillStyle = '#9ca3af'; ctx.font = '500 9px Inter,sans-serif';
+    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', 20, footerY + 32);
+
+    return await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  } catch(e) { return null; }
 }
 
 async function shareBiomarkerImage(name) {
@@ -2991,57 +3095,16 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
 }
 
-function shareBiomarker(name) {
-  const bm = findBiomarker(name.toLowerCase());
-  if (!bm) return;
-  const text = buildShareText(name);
-  if (!text) return;
-  if (navigator.share) {
-    navigator.share({ title: `ORY Biomarker: ${bm.name}`, text, url: 'https://biomarker.ory-berlin.de' }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text).then(() => showShareToast('In Zwischenablage kopiert'));
-  }
-}
-
-function buildShareText(name) {
-  const bm = findBiomarker(name.toLowerCase());
-  if (!bm) return null;
-  const cascade = getCascadeForBiomarker(bm.name);
-  const tests = (bm.foundIn || []).slice(0,3).map(fi => {
-    const t = TESTS.find(t => t.id === fi.id);
-    return t ? `• ${t.name} (${t.price}) — https://ory-berlin.de/products/${t.shopSlug || t.id}` : '';
-  }).filter(Boolean).join('\n');
-  const cofaktoren = (bm.cofaktors || []).slice(0,4).map(c => `• ${c.name}: ${c.why ? c.why.substring(0,60)+'…' : ''}`).join('\n');
-  const cascadeSteps = cascade ? (cascade.wirkung || cascade.aufnahme || cascade)?.steps?.join(' → ') : '';
-  return [
-    `ORY Biomarker: ${bm.name}`,
-    bm.desc ? bm.desc.substring(0,160)+'…' : '',
-    cofaktoren ? `Cofaktoren:\n${cofaktoren}` : '',
-    cascadeSteps ? `Kaskade: ${cascadeSteps}` : '',
-    tests ? `Tests:\n${tests}` : '',
-    `Bearbeitet von ORY Velox KI · velox.ory-berlin.de`,
-    `Diese Info ersetzt keinen Arztbesuch.`,
-    `biomarker.ory-berlin.de`,
-  ].filter(Boolean).join('\n\n');
-}
+function shareBiomarker(name) { shareItem(name, 'general'); }
+function shareBiomarkerWa(name) { shareItem(name, 'wa'); }
+function shareBiomarkerLi(name) { shareItem(name, 'li'); }
 
 function showShareToast(msg) {
   let toast = document.getElementById('shareToast');
   if (!toast) { toast = document.createElement('div'); toast.id = 'shareToast'; toast.className = 'bk-share-toast'; document.body.appendChild(toast); }
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
-}
-
-function shareBiomarkerWa(name) {
-  const text = buildShareText(name);
-  if (!text) return;
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
-
-function shareBiomarkerLi(name) {
-  const url = 'https://biomarker.ory-berlin.de';
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(url), '_blank');
+  setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
 function hideBiomarkerCard() {
