@@ -843,7 +843,7 @@
       border: 1.5px solid var(--border);
       padding: 1rem 1.2rem;
     }
-    #cascadeSvgWrap { max-width: 480px; margin: 0 auto; }
+    #cascadeSvgWrap { max-width: 580px; margin: 0 auto; }
     .bk-cascade-title {
       font-size: 13px; font-weight: 700; letter-spacing: .08em;
       text-transform: uppercase; color: var(--muted); margin-bottom: .4rem;
@@ -1608,10 +1608,62 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     return `${r},${g},${b}`;
   }
   const rgb = hexToRgb(color);
-  const lightFill = `rgba(${rgb},0.11)`;
 
-  const BOX_W = 148, BOX_H = 52, H_UNIT = 178, V_GAP = 72;
-  const SIDE_PAD = 36; // extra horizontal padding for side labels
+  // Kategorie-Icon: kleines SVG-Symbol je Schlüsselwort im sub-Text
+  function categoryIcon(sub, cx, cy, col) {
+    const s = (sub || '').toLowerCase();
+    const r = `rgba(${hexToRgb(col)},0.15)`;
+    // Hintergrund-Kreis
+    let out = `<circle cx="${cx}" cy="${cy}" r="14" fill="${r}" stroke="${col}" stroke-width="1.4" opacity="0.85"/>`;
+    if (s.includes('nerv') || s.includes('myelin') || s.includes('gehirn')) {
+      // Gehirn-Symbol: 2 Bögen
+      out += `<path d="M${cx-6},${cy+2} Q${cx-8},${cy-6} ${cx},${cy-5} Q${cx+8},${cy-6} ${cx+6},${cy+2}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+      out += `<path d="M${cx-4},${cy+4} Q${cx-7},${cy+8} ${cx},${cy+7} Q${cx+7},${cy+8} ${cx+4},${cy+4}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+    } else if (s.includes('zelle') || s.includes('zell') || s.includes('immun') || s.includes('lymph') || s.includes('t-zell') || s.includes('nk-')) {
+      // Zell-Symbol: Kreis mit Kern
+      out += `<circle cx="${cx}" cy="${cy}" r="7" fill="none" stroke="${col}" stroke-width="1.5"/>`;
+      out += `<circle cx="${cx}" cy="${cy}" r="3" fill="${col}" opacity="0.6"/>`;
+    } else if (s.includes('darm') || s.includes('dünndarm') || s.includes('dickdarm') || s.includes('darm')) {
+      // Darm-Symbol: geschwungene Linie
+      out += `<path d="M${cx-7},${cy-3} Q${cx},${cy-8} ${cx+7},${cy-3} Q${cx+4},${cy+3} ${cx},${cy+6} Q${cx-4},${cy+3} ${cx-4},${cy-1}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round"/>`;
+    } else if (s.includes('atp') || s.includes('energie') || s.includes('mitochon') || s.includes('stoff')) {
+      // Energie/Blitz-Symbol
+      out += `<path d="M${cx+3},${cy-8} L${cx-4},${cy} L${cx+1},${cy} L${cx-3},${cy+8}" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    } else if (s.includes('leber') || s.includes('entgift') || s.includes('phase ii')) {
+      // Leber/Filter-Symbol: Dreieck
+      out += `<path d="M${cx},${cy-7} L${cx+7},${cy+5} L${cx-7},${cy+5} Z" fill="none" stroke="${col}" stroke-width="1.6"/>`;
+      out += `<line x1="${cx}" y1="${cy+5}" x2="${cx}" y2="${cy+10}" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+    } else if (s.includes('herz') || s.includes('herzrhyth') || s.includes('gefäß')) {
+      // Herz-Symbol
+      out += `<path d="M${cx},${cy+6} Q${cx-9},${cy-2} ${cx-6},${cy-5} Q${cx-3},${cy-9} ${cx},${cy-4} Q${cx+3},${cy-9} ${cx+6},${cy-5} Q${cx+9},${cy-2} ${cx},${cy+6} Z" fill="${col}" opacity="0.5"/>`;
+    } else if (s.includes('knochen') || s.includes('calcium') || s.includes('mineral')) {
+      // Knochen/Mineral: vertikaler Stab mit Kugeln
+      out += `<line x1="${cx}" y1="${cy-8}" x2="${cx}" y2="${cy+8}" stroke="${col}" stroke-width="2.5" stroke-linecap="round"/>`;
+      out += `<circle cx="${cx}" cy="${cy-8}" r="3.5" fill="${col}" opacity="0.7"/>`;
+      out += `<circle cx="${cx}" cy="${cy+8}" r="3.5" fill="${col}" opacity="0.7"/>`;
+    } else if (s.includes('dna') || s.includes('gen') || s.includes('zellwachs') || s.includes('reparatur')) {
+      // DNA-Doppelhelix-andeutung
+      out += `<path d="M${cx-5},${cy-8} Q${cx+5},${cy-2} ${cx-5},${cy+4}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+      out += `<path d="M${cx+5},${cy-8} Q${cx-5},${cy-2} ${cx+5},${cy+4}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+      out += `<line x1="${cx-4}" y1="${cy-4}" x2="${cx+4}" y2="${cy-4}" stroke="${col}" stroke-width="1.2"/>`;
+      out += `<line x1="${cx-4}" y1="${cy+0}" x2="${cx+4}" y2="${cy+0}" stroke="${col}" stroke-width="1.2"/>`;
+    } else if (s.includes('schlaf') || s.includes('melatonin') || s.includes('nacht')) {
+      // Mond-Symbol
+      out += `<path d="M${cx+4},${cy-7} Q${cx-9},${cy-4} ${cx-8},${cy+4} Q${cx-5},${cy+9} ${cx+4},${cy+7} Q${cx-2},${cy+4} ${cx-2},${cy-1} Q${cx-1},${cy-6} ${cx+4},${cy-7} Z" fill="${col}" opacity="0.55"/>`;
+    } else if (s.includes('blut') || s.includes('erythro') || s.includes('hämo') || s.includes('o₂')) {
+      // Blut/O2-Kreis
+      out += `<circle cx="${cx}" cy="${cy}" r="7" fill="none" stroke="${col}" stroke-width="1.5"/>`;
+      out += `<text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Inter,sans-serif" font-size="8" font-weight="700" fill="${col}">O₂</text>`;
+    } else {
+      // Default: kleiner Punkt + Ring (wie im Complement-Diagramm)
+      out += `<circle cx="${cx}" cy="${cy}" r="5" fill="${col}" opacity="0.65"/>`;
+      out += `<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${col}" stroke-width="1.2" opacity="0.45"/>`;
+    }
+    return out;
+  }
+
+  const BOX_W = 152, BOX_H = 54, H_UNIT = 188, V_GAP = 78;
+  const ICON_R = 14, ICON_GAP = 8; // Seitliches Icon nach Box
 
   const childMap = {};
   let root = null;
@@ -1639,44 +1691,46 @@ function buildBranchCascadeSVG(nodes, accentColor) {
   }
 
   const totalW = treeW(root.id);
-  const PAD = 28;
-  const svgW = Math.max(340, totalW * H_UNIT + PAD * 2 + SIDE_PAD * 2);
+  const PAD = 30;
+  // Extra Breite rechts für Icons bei Blattknoten
+  const svgW = Math.max(360, totalW * H_UNIT + PAD * 2 + (ICON_R + ICON_GAP) * 2);
   layout(root.id, svgW / 2, PAD);
 
   let maxY = 0;
   Object.values(pos).forEach(p => { if (p.y > maxY) maxY = p.y; });
-  const svgH = maxY + BOX_H + PAD + 22;
+  const svgH = maxY + BOX_H + PAD + 10;
 
-  // Einzigartiger Marker-ID pro Farbe
   const markId = 'arr_' + color.replace('#','');
+  const filterId = 'sh_' + color.replace('#','');
   const defs = `<defs>
-    <marker id="${markId}" markerWidth="9" markerHeight="9" refX="5" refY="4.5" orient="auto">
-      <path d="M1,1.5 L8,4.5 L1,7.5 Z" fill="${color}" opacity="0.75"/>
+    <marker id="${markId}" markerWidth="9" markerHeight="9" refX="4" refY="4.5" orient="auto">
+      <path d="M1,1.5 L8,4.5 L1,7.5 Z" fill="${color}" opacity="0.8"/>
     </marker>
-    <filter id="sh"><feDropShadow dx="1.5" dy="2" stdDeviation="2.5" flood-opacity="0.13"/></filter>
+    <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-color="rgba(0,0,0,0.14)"/>
+    </filter>
   </defs>`;
 
-  let edges = '', labels = '', boxes = '';
+  let edges = '', cofLabels = '', boxes = '', icons = '';
 
-  // ─── Kanten + Cofaktor-Labels auf den Pfeilen ───
+  // Kanten + Cofaktor-Badges
   nodes.forEach(n => {
     if (!n.parent || !pos[n.parent] || !pos[n.id]) return;
     const px = pos[n.parent].x, py = pos[n.parent].y + BOX_H;
     const cx2 = pos[n.id].x,   cy2 = pos[n.id].y;
     const my = (py + cy2) / 2;
-    edges += `<path d="M${px},${py} C${px},${my} ${cx2},${my} ${cx2},${cy2}" fill="none" stroke="${color}" stroke-width="2" opacity="0.55" marker-end="url(#${markId})"/>`;
+    edges += `<path d="M${px},${py} C${px},${my} ${cx2},${my} ${cx2},${cy2}" fill="none" stroke="${color}" stroke-width="2.2" opacity="0.5" marker-end="url(#${markId})"/>`;
 
-    // Cofaktor-Badge auf der Kante (wenn sub mit "+" beginnt)
     if (n.sub && n.sub.trim().startsWith('+')) {
-      const lx = (px + cx2) / 2, ly = (py + cy2) / 2;
+      const lx = (px + cx2) / 2, ly = (py + cy2) / 2 - 2;
       const txt = n.sub.trim();
-      const tw = txt.length * 6 + 14;
-      labels += `<rect x="${lx - tw/2}" y="${ly - 10}" width="${tw}" height="18" rx="5" fill="white" stroke="${color}" stroke-width="1.2" opacity="0.96"/>`;
-      labels += `<text x="${lx}" y="${ly + 4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" font-weight="700" fill="${color}">${txt}</text>`;
+      const tw = txt.length * 5.8 + 16;
+      cofLabels += `<rect x="${lx-tw/2}" y="${ly-10}" width="${tw}" height="18" rx="6" fill="white" stroke="${color}" stroke-width="1.3"/>`;
+      cofLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9.5" font-weight="700" fill="${color}">${txt}</text>`;
     }
   });
 
-  // ─── Boxen + Seiten-Labels für Blattknoten ───
+  // Boxen + Icons
   nodes.forEach(n => {
     if (!pos[n.id]) return;
     const {x, y} = pos[n.id];
@@ -1686,31 +1740,25 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     const isCofactor = n.sub && n.sub.trim().startsWith('+');
 
     if (isRoot) {
-      // Schatten + vollständig farbiger Hintergrund
-      boxes += `<rect x="${bx+2}" y="${y+3}" width="${BOX_W}" height="${BOX_H}" rx="11" fill="rgba(${rgb},0.22)" filter="url(#sh)"/>`;
-      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="11" fill="${color}"/>`;
-      boxes += `<text x="${x}" y="${y+21}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="13.5" font-weight="700" fill="white">${n.label}</text>`;
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+37}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="rgba(255,255,255,0.85)">${n.sub}</text>`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="12" fill="${color}" filter="url(#${filterId})"/>`;
+      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="14" font-weight="700" fill="white">${n.label}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="11" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
     } else {
-      // Kind-Knoten: heller getönter Hintergrund + Rand
-      boxes += `<rect x="${bx+2}" y="${y+3}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="rgba(${rgb},0.10)" filter="url(#sh)"/>`;
-      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${lightFill}" stroke="${color}" stroke-width="2"/>`;
-      boxes += `<text x="${x}" y="${y+21}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="12.5" font-weight="700" fill="#111">${n.label}</text>`;
-      // Sub in Box, ABER nicht wenn Cofaktor (der steht schon auf der Kante)
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+37}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="${color}">${n.sub}</text>`;
+      const lightFill = `rgba(${rgb},0.10)`;
+      boxes += `<rect x="${bx}" y="${y}" width="${BOX_W}" height="${BOX_H}" rx="10" fill="${lightFill}" stroke="${color}" stroke-width="2" filter="url(#${filterId})"/>`;
+      boxes += `<text x="${x}" y="${y+22}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="700" fill="#111">${n.label}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${y+38}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="${color}">${n.sub}</text>`;
 
-      // Seiten-Label bei Blattknoten (wie "Inflammation" im Complement-Diagramm)
+      // Grafisches Icon rechts von Blattknoten
       if (isLeaf && n.sub && !isCofactor) {
-        const labX = x + BOX_W / 2 + 10;
-        const labY = y + BOX_H / 2;
-        boxes += `<circle cx="${labX + 9}" cy="${labY}" r="9" fill="${color}" opacity="0.18"/>`;
-        boxes += `<circle cx="${labX + 9}" cy="${labY}" r="9" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.55"/>`;
-        boxes += `<circle cx="${labX + 9}" cy="${labY}" r="4" fill="${color}" opacity="0.7"/>`;
+        const ix = x + BOX_W / 2 + ICON_GAP + ICON_R;
+        const iy = y + BOX_H / 2;
+        icons += categoryIcon(n.sub, ix, iy, color);
       }
     }
   });
 
-  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${defs}${edges}${labels}${boxes}</svg>`;
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible;">${defs}${edges}${cofLabels}${boxes}${icons}</svg>`;
 }
 
 // Wählt automatisch den richtigen Renderer
