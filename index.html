@@ -1571,6 +1571,26 @@ const CASCADES = {
       {id:'7',label:'Insulinresistenz',sub:'Rezeptor ↓',parent:'2'},
     ]},
   },
+  'Verdauungsenzyme & SIBO': {
+    aufnahme: { desc: 'Im gesunden Dünndarm wandert der MMC (Migrating Motor Complex) Bakterien durch. Sinkt die Magensäure oder verlangsamt sich der MMC, besiedeln Bakterien den Dünndarm und fermentieren Kohlenhydrate schon vor der Aufnahme.', color: '#6ee7b7', nodes: [
+      {id:'1',label:'Kohlenhydrate',sub:'Nahrung',parent:null},
+      {id:'2',label:'Magensäure',sub:'erste Barriere',parent:'1',via:'HCl + Pepsinogen'},
+      {id:'3',label:'Pankreas-Enzyme',sub:'Vorverdauung',parent:'2',via:'CCK + Sekretin'},
+      {id:'4',label:'MMC-Motilität',sub:'Darm-Selbstreinigung',parent:'3',via:'Motilin-Hormon'},
+      {id:'5',label:'SIBO',sub:'Bakterienüberwuchs',parent:'4',via:'MMC-Ausfall'},
+      {id:'6',label:'H₂-Produktion',sub:'Durchfall-Typ',parent:'5',via:'Bakterien-Fermentation'},
+      {id:'7',label:'CH₄-Produktion',sub:'Verstopfungs-Typ',parent:'5',via:'Archaea-Methanogen'},
+    ]},
+    wirkung: { desc: 'SIBO-Bakterien konkurrieren um Nährstoffe, schädigen die Darmschleimhaut und produzieren Gase — Methan hemmt den Vagusnerv und bremst die Darmmotilität weiter.', color: '#059669', nodes: [
+      {id:'1',label:'SIBO aktiv',sub:'Dünndarm',parent:null},
+      {id:'2',label:'Malabsorption',sub:'B12, Eisen, Folat',parent:'1',via:'Bakterien-Konkurrenz'},
+      {id:'3',label:'Leaky Gut',sub:'Schleimhaut',parent:'1',via:'LPS-Endotoxine'},
+      {id:'4',label:'Methan → Vagus',sub:'Motilität ↓',parent:'1',via:'Vagusnerv-Hemmung'},
+      {id:'5',label:'Anämie & Mangel',sub:'trotz Ernährung',parent:'2'},
+      {id:'6',label:'Entzündung',sub:'IL-6, CRP ↑',parent:'3',via:'NF-κB-Aktivierung'},
+      {id:'7',label:'Verstopfung',sub:'chronisch',parent:'4',via:'Motilitätsstop'},
+    ]},
+  },
 };
 
 // ── LINEAR CASCADE (statische Kaskaden, rückwärtskompatibel) ──────────────
