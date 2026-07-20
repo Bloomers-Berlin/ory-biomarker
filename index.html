@@ -2732,7 +2732,15 @@ function showBiomarkerCard(b) {
       <div class="bk-cascade-desc" id="cascadeDesc">${first.desc || ''}</div>
       <div id="cascadeSvgWrap">${buildCascadeSVG(first.steps, first.color)}</div>
     </div>`;
-  })() : '';
+  })() : `<div class="bk-cascade-panel" id="cascadePanel" data-bk="${b.name}">
+      <div class="bk-cascade-title">Biochemische Kaskade</div>
+      <div class="bk-cascade-toggle">
+        <button class="bk-ct-btn active" onclick="switchCascade('aufnahme',this)" data-type="aufnahme">AUFNAHME</button>
+        <button class="bk-ct-btn" onclick="switchCascade('wirkung',this)" data-type="wirkung">WIRKUNG</button>
+      </div>
+      <div class="bk-cascade-desc" id="cascadeDesc"></div>
+      <div id="cascadeSvgWrap"><div style="text-align:center;padding:1.5rem 0;color:#9ca3af;font-size:.82rem;">ORY Velox KI generiert Kaskade…<br><span style="font-size:.75rem;opacity:.6">einen Moment bitte</span></div></div>
+    </div>`;
 
   section.innerHTML = `
     <div class="bk-card">
