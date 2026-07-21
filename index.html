@@ -17,6 +17,8 @@
   <meta property="og:title" content="ORY Labor-Datenbank – Alle Diagnostiktests im Überblick" />
   <meta property="og:description" content="Suche nach Biomarkern, Symptomen oder Testarten und finde das passende ORY-Diagnostikprofil – mit Cofaktoren, Kaskaden und direktem Bestelllink." />
   <meta property="og:site_name" content="ORY Berlin" />
+  <meta property="og:image" content="https://ory-berlin.de/images/ory-og-biomarker.png" />
+  <meta name="twitter:image" content="https://ory-berlin.de/images/ory-og-biomarker.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ORY Labor-Datenbank" />
   <meta name="twitter:description" content="34 Diagnostikprofile, 123+ Biomarker, Symptom-Finder und Biomarker-Wissen auf einen Blick." />
@@ -648,6 +650,45 @@
     .bk-share-btn:hover { opacity:.85; }
     .bk-share-toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:#111; color:#fff; font-size:.82rem; padding:.55rem 1.2rem; border-radius:2rem; opacity:0; transition:opacity .3s; pointer-events:none; z-index:9999; }
     .bk-share-toast.show { opacity:1; }
+    /* Share Modal */
+    #shareModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:10000; align-items:center; justify-content:center; padding:1rem; }
+    #shareModal.open { display:flex; }
+    #shareModal .sm-box { background:#fff; border-radius:1.4rem; max-width:540px; width:100%; max-height:92vh; overflow-y:auto; padding:1.4rem; display:flex; flex-direction:column; gap:.9rem; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-box { background:#1e1e2e; } }
+    #shareModal .sm-title { font-size:1rem; font-weight:700; color:#111; margin:0; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-title { color:#f3f3f3; } }
+    #shareModal .sm-images { display:flex; flex-direction:column; gap:.6rem; }
+    #shareModal .sm-img-wrap { position:relative; }
+    #shareModal .sm-img { width:100%; border-radius:.8rem; display:block; }
+    #shareModal .sm-img-label { font-size:.7rem; font-weight:700; color:#889FFE; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.25rem; }
+    #shareModal .sm-img-btn { position:absolute; top:.5rem; right:.5rem; background:rgba(0,0,0,.55); color:#fff; border:none; border-radius:.5rem; padding:.3rem .6rem; font-size:.72rem; font-weight:600; cursor:pointer; }
+    #shareModal .sm-img-btn:hover { background:rgba(0,0,0,.8); }
+    #shareModal .sm-text-section { background:#f7f7f9; border-radius:.8rem; padding:.8rem; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-text-section { background:#2a2a3e; } }
+    #shareModal .sm-text-label { font-size:.7rem; font-weight:700; color:#889FFE; text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem; display:flex; justify-content:space-between; align-items:center; }
+    #shareModal .sm-text-copy-btn { background:#889FFE; color:#fff; border:none; border-radius:.4rem; padding:.2rem .6rem; font-size:.7rem; font-weight:600; cursor:pointer; }
+    #shareModal .sm-text-body { font-size:.78rem; color:#333; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+    #shareModal .sm-text-body a { color:#889FFE; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-text-body { color:#ccc; } }
+    #shareModal .sm-btns { display:flex; flex-wrap:wrap; gap:.45rem; }
+    #shareModal .sm-btn { flex:1; min-width:110px; padding:.55rem .8rem; border:none; border-radius:.7rem; font-size:.8rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.35rem; transition:opacity .15s; }
+    #shareModal .sm-btn:hover { opacity:.85; }
+    #shareModal .sm-btn-wa { background:#25D366; color:#fff; }
+    #shareModal .sm-btn-mail { background:#f59e0b; color:#fff; }
+    #shareModal .sm-btn-save { background:#6b7280; color:#fff; }
+    #shareModal .sm-btn-close { background:#f0f0f3; color:#333; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-btn-close { background:#333; color:#eee; } }
+    #shareModal .sm-hint { font-size:.72rem; color:#9ca3af; text-align:center; line-height:1.5; }
+    #shareModal .sm-copy-all-btn { width:100%; padding:.8rem; background:linear-gradient(135deg,#A8E8E2,#889FFE); color:#fff; border:none; border-radius:.9rem; font-size:.92rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:.5rem; transition:opacity .15s; }
+    #shareModal .sm-copy-all-btn:hover { opacity:.88; }
+    #shareModal .sm-steps { display:flex; align-items:center; justify-content:center; gap:.4rem; background:#f0f0f8; border-radius:.7rem; padding:.55rem .8rem; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-steps { background:#2a2a3e; } }
+    #shareModal .sm-step { font-size:.75rem; font-weight:700; color:#889FFE; }
+    #shareModal .sm-step-arrow { font-size:.75rem; color:#9ca3af; }
+    #shareModal .sm-btn-signal { background:#3a76f0; color:#fff; }
+    #shareModal .sm-btn-tg { background:#26A5E4; color:#fff; }
+    #shareModal .sm-btn-close { min-width:auto; flex:0; padding:.55rem .9rem; background:#f0f0f3; color:#555; }
+    @media(prefers-color-scheme:dark){ #shareModal .sm-btn-close { background:#333; color:#eee; } }
     .bk-disclaimer { font-size:.72rem; color:#9ca3af; margin-top:.6rem; line-height:1.5; }
     .footer-disclaimer { font-size:.75rem; color:#9ca3af; width:100%; text-align:center; padding-top:.75rem; border-top:1px solid var(--border); margin-top:.5rem; }
     .bk-bar-track { background:var(--border); border-radius:2rem; height:6px; overflow:hidden; margin-bottom:.5rem; }
@@ -1237,10 +1278,10 @@ const CASCADES = {
   'Vitamin B12': {
     aufnahme: { desc: 'B12 muss durch Intrinsic Factor aktiviert und im Ileum absorbiert werden — Magenprobleme oder PPI blockieren diesen Schritt.', color: '#2dd4bf', nodes: [
       {id:'1',label:'Nahrung',sub:'Fleisch, Eier',parent:null},
-      {id:'2',label:'Intrinsic Factor',sub:'Magenschleimhaut',parent:'1',via:'HCl + Pepsin'},
-      {id:'3',label:'Ileum',sub:'Absorption',parent:'2',via:'Cubilin-Rezeptor'},
+      {id:'2',label:'Intrinsic Factor',sub:'Magenschleimhaut',parent:'1',via:'HCl + Pepsin',cofactors:[{label:'PPI blockiert!',type:'crit'},{label:'HCl nötig',type:'warn'}]},
+      {id:'3',label:'Ileum',sub:'Absorption',parent:'2',via:'Cubilin-Rezeptor',cofactors:[{label:'Ileum intakt',type:'warn'},{label:'Crohn ↓',type:'warn'}]},
       {id:'4',label:'Transcobalamin II',sub:'Bluttransport',parent:'3',via:'Haptocorrin'},
-      {id:'5',label:'Methylcobalamin',sub:'Nerven & SAM',parent:'4',via:'Methionin-Synthase'},
+      {id:'5',label:'Methylcobalamin',sub:'Nerven & SAM',parent:'4',via:'Methionin-Synthase',cofactors:[{label:'Folat nötig',type:'warn'},{label:'MTHFR Variante',type:'info'}]},
       {id:'6',label:'Adenosylcobalamin',sub:'Mitochondrien',parent:'4',via:'Adenosyl-Transferase'},
       {id:'7',label:'Leber',sub:'Speicher (Jahre)',parent:'5'},
     ]},
@@ -1257,10 +1298,10 @@ const CASCADES = {
     aufnahme: { desc: 'Vitamin D3 entsteht durch UVB-Strahlung in der Haut oder wird fettlöslich aus der Nahrung aufgenommen.', color: '#fbbf24', nodes: [
       {id:'1',label:'UVB / Nahrung',sub:'Ausgangspunkt',parent:null},
       {id:'2',label:'7-DHC (Haut)',sub:'Photosynthese',parent:'1',via:'UVB 290–315 nm'},
-      {id:'3',label:'Nahrungsfett',sub:'Resorption',parent:'1',via:'Mizellen + Galle'},
+      {id:'3',label:'Nahrungsfett',sub:'Resorption',parent:'1',via:'Mizellen + Galle',cofactors:[{label:'Gallensäure!',type:'crit'},{label:'Pankreaslipase',type:'warn'}]},
       {id:'4',label:'Cholecalciferol',sub:'D3 inaktiv',parent:'2',via:'Thermisch spontan'},
       {id:'5',label:'Cholecalciferol',sub:'D3 aus Darm',parent:'3',via:'Chylomikronen'},
-      {id:'6',label:'Albumin/DBP',sub:'Transport',parent:'4'},
+      {id:'6',label:'Albumin/DBP',sub:'Transport',parent:'4',cofactors:[{label:'Östrogen ↑↓',type:'warn'},{label:'Adipositas ↓',type:'warn'}]},
       {id:'7',label:'Leber → 25-OH-D',sub:'Speicherform',parent:'6',via:'CYP2R1'},
     ]},
     wirkung: { desc: 'Die Niere aktiviert 25-OH-D zu Calcitriol — wirkt auf Calcium, Immunzellen und über 200 Gene.', color: '#d97706', nodes: [
@@ -1275,11 +1316,11 @@ const CASCADES = {
   'Magnesium': {
     aufnahme: { desc: 'Nur ~35 % des Nahrungsmagnesiums wird absorbiert — Phytinsäure, Alkohol und Stress senken die Aufnahme weiter.', color: '#6ee7b7', nodes: [
       {id:'1',label:'Nahrung',sub:'Nüsse, Grün',parent:null},
-      {id:'2',label:'Dünndarm',sub:'Absorption ~35%',parent:'1',via:'TRPM6/7-Kanal'},
-      {id:'3',label:'Blut',sub:'ionisiert/Albumin',parent:'2'},
+      {id:'2',label:'Dünndarm',sub:'Absorption ~35%',parent:'1',via:'TRPM6/7-Kanal',cofactors:[{label:'Phytinsäure ↓',type:'warn'},{label:'Alkohol ↓',type:'warn'}]},
+      {id:'3',label:'Blut',sub:'ionisiert/Albumin',parent:'2',cofactors:[{label:'Stress verbraucht',type:'warn'}]},
       {id:'4',label:'Muskelzellen',sub:'Speicher',parent:'3',via:'Mg-Transporter'},
       {id:'5',label:'Knochen',sub:'60% des Bestands',parent:'3',via:'Hydroxylapatit'},
-      {id:'6',label:'Vollblut-Test',sub:'intrazelluläre Messung',parent:'4'},
+      {id:'6',label:'Vollblut-Test',sub:'intrazelluläre Messung',parent:'4',cofactors:[{label:'Serum ungenau',type:'info'}]},
     ]},
     wirkung: { desc: 'Intrazelluläres Mg²⁺ aktiviert ATP und blockiert NMDA-Rezeptoren — Mangel zeigt sich in Muskeln, Nerven und Herzrhythmus.', color: '#059669', nodes: [
       {id:'1',label:'Mg²⁺',sub:'intrazellulär',parent:null},
@@ -1295,10 +1336,10 @@ const CASCADES = {
       {id:'1',label:'Nahrungsprotein',sub:'Truthahn, Nüsse',parent:null},
       {id:'2',label:'Dünndarm',sub:'Absorption',parent:'1',via:'PAT1-Transporter'},
       {id:'3',label:'Blut (Albumin)',sub:'Transport',parent:'2'},
-      {id:'4',label:'Blut-Hirn-Schranke',sub:'Gehirn',parent:'3',via:'LAT1 (kompetitiv)'},
-      {id:'5',label:'Darm (95%)',sub:'lokale Produktion',parent:'3',via:'Mikrobiom + Epithel'},
-      {id:'6',label:'Serotonin-Weg',sub:'+ B6, Mg',parent:'4',via:'TPH2'},
-      {id:'7',label:'Kynurenin-Weg',sub:'bei Entzündung',parent:'4',via:'IDO (Entzündung)'},
+      {id:'4',label:'Blut-Hirn-Schranke',sub:'Gehirn',parent:'3',via:'LAT1 (kompetitiv)',cofactors:[{label:'AA-Konkurrenz',type:'warn'},{label:'Insulin hilft',type:'ok'}]},
+      {id:'5',label:'Darm (95%)',sub:'lokale Produktion',parent:'3',via:'Mikrobiom + Epithel',cofactors:[{label:'Darmflora nötig',type:'warn'}]},
+      {id:'6',label:'Serotonin-Weg',sub:'+ B6, Mg',parent:'4',via:'TPH2',cofactors:[{label:'B6 nötig',type:'crit'},{label:'Mg nötig',type:'warn'}]},
+      {id:'7',label:'Kynurenin-Weg',sub:'bei Entzündung',parent:'4',via:'IDO (Entzündung)',cofactors:[{label:'Entzündung ↑',type:'crit'}]},
     ]},
     wirkung: { desc: 'Tryptophan wird zu Serotonin → Melatonin oder bei Entzündung in den Kynurenin-Weg umgeleitet — IDO blockiert die Serotoninproduktion.', color: '#7c3aed', nodes: [
       {id:'1',label:'L-Tryptophan',sub:'Ausgangsstoff',parent:null},
@@ -1313,8 +1354,8 @@ const CASCADES = {
   'Serotonin': {
     aufnahme: { desc: '95 % des Serotonins entsteht im Darm — Darmbakterien, B6 und Tryptophan sind Voraussetzungen für die lokale Produktion.', color: '#c4b5fd', nodes: [
       {id:'1',label:'L-Tryptophan',sub:'Nahrung',parent:null},
-      {id:'2',label:'Darmschleimhaut',sub:'enterochromaffin',parent:'1',via:'Mikrobiom'},
-      {id:'3',label:'TPH1 + B6',sub:'Aktivierung',parent:'2',via:'BH4-Kofaktor'},
+      {id:'2',label:'Darmschleimhaut',sub:'enterochromaffin',parent:'1',via:'Mikrobiom',cofactors:[{label:'Darmflora nötig',type:'crit'},{label:'Leaky Gut ↓',type:'warn'}]},
+      {id:'3',label:'TPH1 + B6',sub:'Aktivierung',parent:'2',via:'BH4-Kofaktor',cofactors:[{label:'B6 nötig',type:'crit'},{label:'BH4 nötig',type:'warn'}]},
       {id:'4',label:'5-HTP',sub:'Zwischenstufe',parent:'3',via:'AADC'},
       {id:'5',label:'Serotonin Darm',sub:'95% lokal',parent:'4'},
       {id:'6',label:'Blutplättchen',sub:'Transport',parent:'5',via:'SERT-Transporter'},
@@ -1332,10 +1373,10 @@ const CASCADES = {
   'Dopamin': {
     aufnahme: { desc: 'Dopamin wird nicht aus der Nahrung aufgenommen — L-Tyrosin muss die Blut-Hirn-Schranke passieren und im Neuron zu Dopamin umgewandelt werden.', color: '#60a5fa', nodes: [
       {id:'1',label:'L-Phenylalanin',sub:'Nahrung',parent:null},
-      {id:'2',label:'L-Tyrosin',sub:'Hydroxylierung',parent:'1',via:'PAH + BH4'},
-      {id:'3',label:'Blut-Hirn-Schranke',sub:'Eintritt Gehirn',parent:'2',via:'LAT1-Transporter'},
-      {id:'4',label:'L-DOPA',sub:'+ Eisen, B6',parent:'3',via:'TH + Fe²⁺ + BH4'},
-      {id:'5',label:'Dopamin',sub:'Vesikel, Synapse',parent:'4',via:'DOPA-Decarboxylase'},
+      {id:'2',label:'L-Tyrosin',sub:'Hydroxylierung',parent:'1',via:'PAH + BH4',cofactors:[{label:'BH4 nötig',type:'warn'},{label:'Folat für BH4',type:'info'}]},
+      {id:'3',label:'Blut-Hirn-Schranke',sub:'Eintritt Gehirn',parent:'2',via:'LAT1-Transporter',cofactors:[{label:'AA-Konkurrenz',type:'warn'}]},
+      {id:'4',label:'L-DOPA',sub:'+ Eisen, B6',parent:'3',via:'TH + Fe²⁺ + BH4',cofactors:[{label:'Eisen nötig',type:'crit'},{label:'B6 nötig',type:'crit'}]},
+      {id:'5',label:'Dopamin',sub:'Vesikel, Synapse',parent:'4',via:'DOPA-Decarboxylase',cofactors:[{label:'Kupfer nötig',type:'warn'}]},
       {id:'6',label:'Nebenniere',sub:'Noradrenalin-Quelle',parent:'2',via:'Blutbahn'},
     ]},
     wirkung: { desc: 'Dopamin aktiviert Belohnungskreise und wird zu Noradrenalin und Adrenalin weiterverarbeitet — Eisen und Vitamin C sind für jeden Schritt nötig.', color: '#1d4ed8', nodes: [
@@ -1349,12 +1390,12 @@ const CASCADES = {
   },
   'Cortisol': {
     aufnahme: { desc: 'Cortisol wird in der Nebennierenrinde aus Cholesterin synthetisiert — Pregnenolon verzweigt zu Cortisol UND DHEA.', color: '#f87171', nodes: [
-      {id:'1',label:'Cholesterin',sub:'Ausgangsstoff',parent:null},
-      {id:'2',label:'Pregnenolon',sub:'Nebennierenrinde',parent:'1',via:'StAR + CYP11A1'},
+      {id:'1',label:'Cholesterin',sub:'Ausgangsstoff',parent:null,cofactors:[{label:'Cholesterin nötig',type:'info'}]},
+      {id:'2',label:'Pregnenolon',sub:'Nebennierenrinde',parent:'1',via:'StAR + CYP11A1',cofactors:[{label:'ACTH Signal',type:'crit'},{label:'Vitamin B5 nötig',type:'warn'}]},
       {id:'3',label:'Progesteron',sub:'Cortisol-Weg',parent:'2',via:'3β-HSD'},
-      {id:'4',label:'DHEA',sub:'Androgen-Weg',parent:'2',via:'CYP17A1'},
+      {id:'4',label:'DHEA',sub:'Androgen-Weg',parent:'2',via:'CYP17A1',cofactors:[{label:'DHEA sinkt m. Stress',type:'warn'}]},
       {id:'5',label:'11-Desoxycortisol',sub:'Zwischenstufe',parent:'3',via:'CYP21A2'},
-      {id:'6',label:'Cortisol',sub:'aktives Stresshormon',parent:'5',via:'CYP11B1'},
+      {id:'6',label:'Cortisol',sub:'aktives Stresshormon',parent:'5',via:'CYP11B1',cofactors:[{label:'Chron. Stress ↑↑',type:'crit'},{label:'Schlaf senkt',type:'ok'}]},
       {id:'7',label:'Testosteron',sub:'über DHEA',parent:'4',via:'HSD + Aromatase'},
     ]},
     wirkung: { desc: 'Cortisol unterdrückt Immunsystem, erhöht Blutzucker und verbraucht DHEA — chronisch hohe Spiegel führen zu Erschöpfung und Schlafstörungen.', color: '#b91c1c', nodes: [
@@ -1370,11 +1411,11 @@ const CASCADES = {
   'Eisen': {
     aufnahme: { desc: 'Eisen muss zu Fe²⁺ reduziert werden (Vitamin C) und wird über Ferritin gespeichert — Entzündung erhöht Hepcidin und blockiert die Aufnahme.', color: '#fb923c', nodes: [
       {id:'1',label:'Fe³⁺ Nahrung',sub:'Fleisch / pflanzlich',parent:null},
-      {id:'2',label:'Vitamin C',sub:'Reduktion → Fe²⁺',parent:'1',via:'Ascorbat-Reduktion'},
-      {id:'3',label:'Duodenum',sub:'Ferroportin',parent:'2',via:'DMT1-Transporter'},
-      {id:'4',label:'Transferrin',sub:'Bluttransport',parent:'3',via:'Ferroportin + Cp'},
+      {id:'2',label:'Vitamin C',sub:'Reduktion → Fe²⁺',parent:'1',via:'Ascorbat-Reduktion',cofactors:[{label:'Vit. C nötig',type:'crit'},{label:'Kaffee/Tee ↓',type:'warn'}]},
+      {id:'3',label:'Duodenum',sub:'Ferroportin',parent:'2',via:'DMT1-Transporter',cofactors:[{label:'Zink konkurriert',type:'warn'}]},
+      {id:'4',label:'Transferrin',sub:'Bluttransport',parent:'3',via:'Ferroportin + Cp',cofactors:[{label:'Protein nötig',type:'info'}]},
       {id:'5',label:'Ferritin',sub:'Speicher, Leber',parent:'4',via:'TfR1-Rezeptor'},
-      {id:'6',label:'Hepcidin',sub:'Blockade bei Entzündung',parent:'4',via:'IL-6 → Hepcidin'},
+      {id:'6',label:'Hepcidin',sub:'Blockade bei Entzündung',parent:'4',via:'IL-6 → Hepcidin',cofactors:[{label:'Entzündung ↑!',type:'crit'},{label:'CRP prüfen',type:'info'}]},
     ]},
     wirkung: { desc: 'Eisen ist Kern des Hämoglobins und der Mitochondrien-Atmungskette — Mangel führt zu Sauerstoffmangel in allen Zellen.', color: '#c2410c', nodes: [
       {id:'1',label:'Eisen (Fe²⁺)',sub:'Zelle',parent:null},
@@ -1388,8 +1429,8 @@ const CASCADES = {
   'Zink': {
     aufnahme: { desc: 'Nur ~30 % des Nahrungszinks wird absorbiert — Phytinsäure hemmt die Aufnahme erheblich.', color: '#a3e635', nodes: [
       {id:'1',label:'Nahrung',sub:'Fleisch, Samen',parent:null},
-      {id:'2',label:'ZIP4-Transporter',sub:'Dünndarm',parent:'1',via:'ZIP4-Kanal'},
-      {id:'3',label:'Metallothionein',sub:'Puffer-Protein',parent:'2',via:'MT-Bindung'},
+      {id:'2',label:'ZIP4-Transporter',sub:'Dünndarm',parent:'1',via:'ZIP4-Kanal',cofactors:[{label:'Phytinsäure ↓',type:'warn'},{label:'Tierisch besser',type:'info'}]},
+      {id:'3',label:'Metallothionein',sub:'Puffer-Protein',parent:'2',via:'MT-Bindung',cofactors:[{label:'Eisen konkurriert',type:'warn'}]},
       {id:'4',label:'Plasma',sub:'an Albumin',parent:'3',via:'ZnT1-Export'},
       {id:'5',label:'Leber',sub:'Hauptspeicher',parent:'4',via:'Albumin-Komplex'},
       {id:'6',label:'Immunzellen',sub:'T-Zellen, NK',parent:'4',via:'ZIP-Transporter'},
@@ -1407,11 +1448,11 @@ const CASCADES = {
   'Folsäure': {
     aufnahme: { desc: 'Folat muss im Darm aktiviert werden — MTHFR-Genvarianten blockieren die Umwandlung zur aktiven Form 5-MTHF.', color: '#34d399', nodes: [
       {id:'1',label:'Folat / B9',sub:'Nahrung, grün',parent:null},
-      {id:'2',label:'Dünndarm',sub:'Absorption',parent:'1',via:'PCFT-Transporter'},
-      {id:'3',label:'DHFR-Enzym',sub:'erste Aktivierung',parent:'2',via:'NADPH'},
+      {id:'2',label:'Dünndarm',sub:'Absorption',parent:'1',via:'PCFT-Transporter',cofactors:[{label:'Hitze zerstört',type:'warn'},{label:'Alkohol ↓',type:'warn'}]},
+      {id:'3',label:'DHFR-Enzym',sub:'erste Aktivierung',parent:'2',via:'NADPH',cofactors:[{label:'Riboflavin nötig',type:'warn'}]},
       {id:'4',label:'THF',sub:'Tetrahydrofolat',parent:'3'},
-      {id:'5',label:'MTHFR',sub:'Schlüsselschritt',parent:'4',via:'MTHFR + Riboflavin'},
-      {id:'6',label:'5-MTHF',sub:'aktive Form',parent:'5'},
+      {id:'5',label:'MTHFR',sub:'Schlüsselschritt',parent:'4',via:'MTHFR + Riboflavin',cofactors:[{label:'MTHFR Variante!',type:'crit'},{label:'Riboflavin B2 nötig',type:'warn'}]},
+      {id:'6',label:'5-MTHF',sub:'aktive Form',parent:'5',cofactors:[{label:'B12 Synergie',type:'ok'}]},
     ]},
     wirkung: { desc: '5-MTHF liefert Methylgruppen für den SAM-Zyklus, senkt Homocystein und ist für DNA-Synthese unersetzlich.', color: '#059669', nodes: [
       {id:'1',label:'5-MTHF',sub:'aktive Form',parent:null},
@@ -1425,11 +1466,11 @@ const CASCADES = {
   'Histamin': {
     aufnahme: { desc: 'Histamin entsteht aus Histidin durch Darmbakterien oder wird direkt aufgenommen — DAO im Darm ist die erste Abbaubarriere.', color: '#f9a8d4', nodes: [
       {id:'1',label:'Histidin',sub:'Nahrung',parent:null},
-      {id:'2',label:'Darmbakterien',sub:'HDC-Enzym',parent:'1',via:'HDC + B6'},
-      {id:'3',label:'Histaminreiche Nahrung',sub:'direkt',parent:'1'},
-      {id:'4',label:'DAO-Enzym',sub:'Abbau Darm',parent:'2',via:'DAO + B6 + Kupfer'},
+      {id:'2',label:'Darmbakterien',sub:'HDC-Enzym',parent:'1',via:'HDC + B6',cofactors:[{label:'Dysbiose ↑ HDC',type:'warn'}]},
+      {id:'3',label:'Histaminreiche Nahrung',sub:'direkt',parent:'1',cofactors:[{label:'Käse, Wein, Fisch',type:'info'}]},
+      {id:'4',label:'DAO-Enzym',sub:'Abbau Darm',parent:'2',via:'DAO + B6 + Kupfer',cofactors:[{label:'B6 + Kupfer nötig',type:'crit'},{label:'Alkohol hemmt DAO',type:'warn'}]},
       {id:'5',label:'Resthistamin',sub:'Blut',parent:'4'},
-      {id:'6',label:'HNMT',sub:'Abbau Gewebe',parent:'5',via:'HNMT + SAM'},
+      {id:'6',label:'HNMT',sub:'Abbau Gewebe',parent:'5',via:'HNMT + SAM',cofactors:[{label:'SAM nötig',type:'warn'},{label:'B12 + Folat',type:'info'}]},
     ]},
     wirkung: { desc: 'Histamin wirkt an H1–H3-Rezeptoren — DAO-Mangel führt zu Intoleranzsymptomen.', color: '#db2777', nodes: [
       {id:'1',label:'Histamin',sub:'Mastzellen',parent:null},
@@ -1443,12 +1484,12 @@ const CASCADES = {
   'Testosteron': {
     aufnahme: { desc: 'Testosteron wird aus Cholesterin in Hoden/Ovarien und Nebennieren synthetisiert — Pregnenolon verzweigt zu Cortisol und DHEA/Testosteron.', color: '#fcd34d', nodes: [
       {id:'1',label:'Cholesterin',sub:'Ausgangsstoff',parent:null},
-      {id:'2',label:'Pregnenolon',sub:'Nebennierenrinde',parent:'1',via:'StAR + CYP11A1'},
-      {id:'3',label:'DHEA',sub:'Androgen-Vorstufe',parent:'2',via:'CYP17A1'},
+      {id:'2',label:'Pregnenolon',sub:'Nebennierenrinde',parent:'1',via:'StAR + CYP11A1',cofactors:[{label:'LH Signal nötig',type:'crit'},{label:'Zink nötig',type:'warn'}]},
+      {id:'3',label:'DHEA',sub:'Androgen-Vorstufe',parent:'2',via:'CYP17A1',cofactors:[{label:'Cortisol-Konkurrenz',type:'warn'}]},
       {id:'4',label:'Progesteron',sub:'Frauen-Weg',parent:'2',via:'3β-HSD'},
       {id:'5',label:'Androstendion',sub:'Zwischenstufe',parent:'3',via:'17β-HSD'},
-      {id:'6',label:'Testosteron',sub:'Gonaden',parent:'5',via:'17β-HSD (Hoden)'},
-      {id:'7',label:'Östradiol',sub:'Aromatase',parent:'5',via:'CYP19A1'},
+      {id:'6',label:'Testosteron',sub:'Gonaden',parent:'5',via:'17β-HSD (Hoden)',cofactors:[{label:'Schlaf ↑ Testo',type:'ok'},{label:'SHBG bindet frei',type:'warn'}]},
+      {id:'7',label:'Östradiol',sub:'Aromatase',parent:'5',via:'CYP19A1',cofactors:[{label:'Adipositas ↑ E2',type:'warn'}]},
     ]},
     wirkung: { desc: 'Freies Testosteron wirkt an Androgenrezeptoren und wird zu DHT (stärker) oder Östrogen umgewandelt.', color: '#b45309', nodes: [
       {id:'1',label:'Freies Testosteron',sub:'ungebunden',parent:null},
@@ -1462,12 +1503,12 @@ const CASCADES = {
   },
   'TSH': {
     aufnahme: { desc: 'Jod und Tyrosin sind Bausteine der Schilddrüsenhormone — Jod- oder Selen-Mangel blockiert Synthese und Aktivierung.', color: '#5eead4', nodes: [
-      {id:'1',label:'Jod + Tyrosin',sub:'Nahrung',parent:null},
-      {id:'2',label:'NIS-Transporter',sub:'Schilddrüse',parent:'1',via:'Na⁺/I⁻-Symporter'},
-      {id:'3',label:'Thyreoglobulin',sub:'Jodierung',parent:'2',via:'TPO + H₂O₂'},
+      {id:'1',label:'Jod + Tyrosin',sub:'Nahrung',parent:null,cofactors:[{label:'Jodmangel!',type:'crit'},{label:'Selen nötig',type:'crit'}]},
+      {id:'2',label:'NIS-Transporter',sub:'Schilddrüse',parent:'1',via:'Na⁺/I⁻-Symporter',cofactors:[{label:'TSH aktiviert',type:'info'}]},
+      {id:'3',label:'Thyreoglobulin',sub:'Jodierung',parent:'2',via:'TPO + H₂O₂',cofactors:[{label:'Fluor hemmt NIS',type:'warn'},{label:'Autoimmun ↓ TPO',type:'warn'}]},
       {id:'4',label:'T4 (inaktiv)',sub:'Thyroxin',parent:'3'},
-      {id:'5',label:'T3 (aktiv)',sub:'Leber + Selen',parent:'4',via:'DIO1/2 + Selen'},
-      {id:'6',label:'rT3 (inaktiv)',sub:'Stress-Weg',parent:'4',via:'DIO3 (Stress)'},
+      {id:'5',label:'T3 (aktiv)',sub:'Leber + Selen',parent:'4',via:'DIO1/2 + Selen',cofactors:[{label:'Selen krit. nötig',type:'crit'},{label:'Cortisol hemmt',type:'warn'}]},
+      {id:'6',label:'rT3 (inaktiv)',sub:'Stress-Weg',parent:'4',via:'DIO3 (Stress)',cofactors:[{label:'Stress → rT3 ↑',type:'warn'}]},
     ]},
     wirkung: { desc: 'T3 wirkt an Rezeptoren und steuert Stoffwechsel, Energie und Körperwärme — TSH ist der Regelkreis-Marker.', color: '#0f766e', nodes: [
       {id:'1',label:'T3 aktiv',sub:'Schilddrüsenhormon',parent:null},
@@ -1480,11 +1521,11 @@ const CASCADES = {
   },
   'Homocystein': {
     aufnahme: { desc: 'Homocystein entsteht als toxisches Zwischenprodukt beim Abbau von Methionin aus eiweißreicher Nahrung.', color: '#f87171', nodes: [
-      {id:'1',label:'Methionin',sub:'Nahrungsprotein',parent:null},
+      {id:'1',label:'Methionin',sub:'Nahrungsprotein',parent:null,cofactors:[{label:'Tierprotein Hauptquelle',type:'info'}]},
       {id:'2',label:'SAM',sub:'Methyldonor',parent:'1',via:'MAT-Enzym'},
       {id:'3',label:'SAH',sub:'Zwischenstufe',parent:'2',via:'Methylierung'},
-      {id:'4',label:'Homocystein',sub:'toxisch, Blut',parent:'3',via:'SAH-Hydrolase'},
-      {id:'5',label:'Messung',sub:'Nüchternblut',parent:'4'},
+      {id:'4',label:'Homocystein',sub:'toxisch, Blut',parent:'3',via:'SAH-Hydrolase',cofactors:[{label:'B12+Folat senken',type:'ok'},{label:'B6 senkt',type:'ok'}]},
+      {id:'5',label:'Messung',sub:'Nüchternblut',parent:'4',cofactors:[{label:'Nüchtern messen!',type:'info'}]},
       {id:'6',label:'Zielwert < 10',sub:'µmol/L',parent:'4'},
     ]},
     wirkung: { desc: 'Erhöhtes Homocystein wird remethyliert (B12+Folat) ODER via Transsulfurierung (B6) zu Glutathion abgebaut.', color: '#b91c1c', nodes: [
@@ -1500,10 +1541,10 @@ const CASCADES = {
     aufnahme: { desc: 'Glutathion wird in der Zelle aus Glutamat, Cystein und Glycin synthetisiert — Cystein ist der limitierende Faktor.', color: '#6ee7b7', nodes: [
       {id:'1',label:'3 Aminosäuren',sub:'Vorstufen',parent:null},
       {id:'2',label:'Glutamat',sub:'Aminosäure',parent:'1'},
-      {id:'3',label:'Cystein',sub:'limitierend',parent:'1'},
-      {id:'4',label:'Glycin',sub:'Aminosäure',parent:'1'},
-      {id:'5',label:'γ-GCS-Enzym',sub:'Schlüsselschritt',parent:'2',via:'γ-GCS + ATP'},
-      {id:'6',label:'GSH',sub:'Glutathion aktiv',parent:'5',via:'GSS-Enzym + ATP'},
+      {id:'3',label:'Cystein',sub:'limitierend',parent:'1',cofactors:[{label:'NAC als Quelle',type:'ok'},{label:'Cystein limitiert!',type:'crit'}]},
+      {id:'4',label:'Glycin',sub:'Aminosäure',parent:'1',cofactors:[{label:'Kollagen-Quelle',type:'info'}]},
+      {id:'5',label:'γ-GCS-Enzym',sub:'Schlüsselschritt',parent:'2',via:'γ-GCS + ATP',cofactors:[{label:'ATP nötig',type:'warn'},{label:'Oxidat. Stress ↓',type:'warn'}]},
+      {id:'6',label:'GSH',sub:'Glutathion aktiv',parent:'5',via:'GSS-Enzym + ATP',cofactors:[{label:'Selen (GPx) nötig',type:'warn'}]},
     ]},
     wirkung: { desc: 'GSH neutralisiert Sauerstoffspezies, regeneriert Vitamin C/E und ermöglicht Leberentgiftung — Selen ist für GPx essenziell.', color: '#047857', nodes: [
       {id:'1',label:'GSH (reduziert)',sub:'Antioxidans',parent:null},
@@ -1517,9 +1558,9 @@ const CASCADES = {
   'CoQ10': {
     aufnahme: { desc: 'CoQ10 aus der Nahrung wird mit Fett absorbiert — Statine hemmen die körpereigene Synthese über den Mevalonat-Weg.', color: '#fbbf24', nodes: [
       {id:'1',label:'Nahrung',sub:'Fleisch, Fisch',parent:null},
-      {id:'2',label:'Körpersynthese',sub:'Mevalonat-Weg',parent:null},
-      {id:'3',label:'Mizellen + Fett',sub:'Resorption',parent:'1',via:'Gallensalze'},
-      {id:'4',label:'Statine hemmen',sub:'Synthese ↓',parent:'2',via:'HMG-CoA-Red.'},
+      {id:'2',label:'Körpersynthese',sub:'Mevalonat-Weg',parent:null,cofactors:[{label:'Alter senkt Syn.',type:'warn'},{label:'B-Vitamine nötig',type:'info'}]},
+      {id:'3',label:'Mizellen + Fett',sub:'Resorption',parent:'1',via:'Gallensalze',cofactors:[{label:'Gallensäure nötig',type:'crit'},{label:'Mit Fett nehmen',type:'ok'}]},
+      {id:'4',label:'Statine hemmen',sub:'Synthese ↓',parent:'2',via:'HMG-CoA-Red.',cofactors:[{label:'Statine blockieren!',type:'crit'}]},
       {id:'5',label:'LDL-Carrier',sub:'Bluttransport',parent:'3',via:'Lymphe → Blut'},
       {id:'6',label:'Mitochondrien',sub:'Zielort',parent:'5',via:'Membranintegration'},
     ]},
@@ -1535,9 +1576,9 @@ const CASCADES = {
   'Omega-3': {
     aufnahme: { desc: 'Pflanzliches ALA wird nur zu 5–10 % in EPA umgewandelt — direktes EPA/DHA aus Fischöl ist effizienter.', color: '#93c5fd', nodes: [
       {id:'1',label:'Nahrungsquellen',sub:'Ausgangspunkt',parent:null},
-      {id:'2',label:'ALA',sub:'Pflanzlich, Lein',parent:'1'},
-      {id:'3',label:'EPA/DHA',sub:'Fisch, Algen',parent:'1'},
-      {id:'4',label:'Δ6-Desaturase',sub:'ineffizient ~5%',parent:'2',via:'Δ6D + B6/Mg/Zn'},
+      {id:'2',label:'ALA',sub:'Pflanzlich, Lein',parent:'1',cofactors:[{label:'Nur 5% Konvers.',type:'warn'}]},
+      {id:'3',label:'EPA/DHA',sub:'Fisch, Algen',parent:'1',cofactors:[{label:'Gallensäure nötig',type:'crit'},{label:'Mit Fett nehmen',type:'ok'}]},
+      {id:'4',label:'Δ6-Desaturase',sub:'ineffizient ~5%',parent:'2',via:'Δ6D + B6/Mg/Zn',cofactors:[{label:'B6+Mg+Zn nötig',type:'warn'},{label:'Omega-6 konkurriert',type:'warn'}]},
       {id:'5',label:'EPA (aus ALA)',sub:'wenig',parent:'4'},
       {id:'6',label:'Phospholipide',sub:'Zellmembran',parent:'3',via:'Mizellen + Galle'},
       {id:'7',label:'Omega-3-Index',sub:'Messung im Blut',parent:'6'},
@@ -1555,11 +1596,11 @@ const CASCADES = {
   'Insulin': {
     aufnahme: { desc: 'Insulin wird in den Langerhans-Inseln des Pankreas als Antwort auf steigenden Blutzucker sezerniert.', color: '#fb923c', nodes: [
       {id:'1',label:'Glucose ↑',sub:'Blut',parent:null},
-      {id:'2',label:'β-Zellen',sub:'GLUT2-Sensor',parent:'1',via:'GLUT2-Kanal'},
+      {id:'2',label:'β-Zellen',sub:'GLUT2-Sensor',parent:'1',via:'GLUT2-Kanal',cofactors:[{label:'Zink in β-Zellen',type:'warn'},{label:'Mg nötig',type:'warn'}]},
       {id:'3',label:'ATP-Anstieg',sub:'K⁺-Kanal schließt',parent:'2',via:'Glykolyse'},
-      {id:'4',label:'Ca²⁺-Einstrom',sub:'Depolarisation',parent:'3',via:'KATP-Kanal → CaV'},
+      {id:'4',label:'Ca²⁺-Einstrom',sub:'Depolarisation',parent:'3',via:'KATP-Kanal → CaV',cofactors:[{label:'Magnesium nötig',type:'warn'}]},
       {id:'5',label:'Insulin',sub:'Exozytose',parent:'4',via:'Ca²⁺-Exozytose'},
-      {id:'6',label:'C-Peptid',sub:'Messung β-Funktion',parent:'4'},
+      {id:'6',label:'C-Peptid',sub:'Messung β-Funktion',parent:'4',cofactors:[{label:'Eigenproduktion-Test',type:'info'}]},
     ]},
     wirkung: { desc: 'Insulin öffnet GLUT4-Transporter — chronisch hohe Spiegel führen zu Rezeptor-Desensibilisierung und Insulinresistenz.', color: '#c2410c', nodes: [
       {id:'1',label:'Insulin',sub:'Blut',parent:null},
@@ -1574,10 +1615,10 @@ const CASCADES = {
   'Verdauungsenzyme & SIBO': {
     aufnahme: { desc: 'Im gesunden Dünndarm wandert der MMC (Migrating Motor Complex) Bakterien durch. Sinkt die Magensäure oder verlangsamt sich der MMC, besiedeln Bakterien den Dünndarm und fermentieren Kohlenhydrate schon vor der Aufnahme.', color: '#6ee7b7', nodes: [
       {id:'1',label:'Kohlenhydrate',sub:'Nahrung',parent:null},
-      {id:'2',label:'Magensäure',sub:'erste Barriere',parent:'1',via:'HCl + Pepsinogen'},
+      {id:'2',label:'Magensäure',sub:'erste Barriere',parent:'1',via:'HCl + Pepsinogen',cofactors:[{label:'PPI senkt HCl!',type:'crit'},{label:'Zink nötig',type:'warn'}]},
       {id:'3',label:'Pankreas-Enzyme',sub:'Vorverdauung',parent:'2',via:'CCK + Sekretin'},
-      {id:'4',label:'MMC-Motilität',sub:'Darm-Selbstreinigung',parent:'3',via:'Motilin-Hormon'},
-      {id:'5',label:'SIBO',sub:'Bakterienüberwuchs',parent:'4',via:'MMC-Ausfall'},
+      {id:'4',label:'MMC-Motilität',sub:'Darm-Selbstreinigung',parent:'3',via:'Motilin-Hormon',cofactors:[{label:'Fasten aktiviert',type:'ok'},{label:'Snacking hemmt',type:'warn'}]},
+      {id:'5',label:'SIBO',sub:'Bakterienüberwuchs',parent:'4',via:'MMC-Ausfall',cofactors:[{label:'Antibiotika Risiko',type:'warn'},{label:'Opiode hemmen MMC',type:'warn'}]},
       {id:'6',label:'H₂-Produktion',sub:'Durchfall-Typ',parent:'5',via:'Bakterien-Fermentation'},
       {id:'7',label:'CH₄-Produktion',sub:'Verstopfungs-Typ',parent:'5',via:'Archaea-Methanogen'},
     ]},
@@ -1631,7 +1672,9 @@ function buildBranchCascadeSVG(nodes, accentColor) {
   // Je Ast vom Root eine eigene Pastellfarbe
   const BRANCH_PALETTE = ['#93C5FD','#FCA5A5','#86EFAC','#FCD34D','#C4B5FD','#67E8F9','#F9A8D4','#6EE7B7'];
 
-  const BOX_W = 152, BOX_H = 62, V_GAP = 76;
+  const BOX_W = 152, BOX_H = 62;
+  const hasCofactors = nodes.some(n => n.cofactors && n.cofactors.length);
+  const V_GAP = hasCofactors ? 112 : 76;
   const PAD = 28, SVG_W = 660;
 
   const childMap = {};
@@ -1691,6 +1734,9 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     </filter>
   </defs>`;
 
+  // XML-Entity-Escaping für SVG-Text (& < > " ' müssen escaped werden)
+  function xe(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
   let edges = '', edgeLabels = '', boxes = '';
 
   // Kanten + via-Badges
@@ -1706,12 +1752,12 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     if (n.via) {
       const tw = n.via.length * 5.8 + 18;
       edgeLabels += `<rect x="${lx-tw/2}" y="${ly-11}" width="${tw}" height="20" rx="10" fill="${nc}" opacity="0.92"/>`;
-      edgeLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" font-weight="700" fill="white">${n.via}</text>`;
+      edgeLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9" font-weight="700" fill="white">${xe(n.via)}</text>`;
     } else if (n.sub && n.sub.trim().startsWith('+')) {
       const txt = n.sub.trim();
       const tw = txt.length * 5.6 + 16;
       edgeLabels += `<rect x="${lx-tw/2}" y="${ly-10}" width="${tw}" height="19" rx="9" fill="white" stroke="${nc}" stroke-width="1.4"/>`;
-      edgeLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9.5" font-weight="700" fill="${nc}">${txt}</text>`;
+      edgeLabels += `<text x="${lx}" y="${ly+4}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="9.5" font-weight="700" fill="${nc}">${xe(txt)}</text>`;
     }
   });
 
@@ -1726,7 +1772,7 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     return [text.substring(0, sp), text.substring(sp + 1)];
   }
   function drawLabel(text, x, y, boxW, fs, fill, isTwoLine) {
-    const lines = labelLines(text, boxW, fs);
+    const lines = labelLines(text, boxW, fs).map(xe);
     if (lines.length === 1) {
       const yc = isTwoLine ? y + BOX_H / 2 - 8 : y + 22;
       return `<text x="${x}" y="${yc}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fs}" font-weight="700" fill="${fill}">${lines[0]}</text>`;
@@ -1752,15 +1798,37 @@ function buildBranchCascadeSVG(nodes, accentColor) {
     if (isRoot) {
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="12" fill="${color}" filter="url(#${filtId})"/>`;
       boxes += drawLabel(n.label, x, y, BOX_W_DYN, 13.5, 'white', !!n.sub);
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="rgba(255,255,255,0.82)">${n.sub}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="10.5" fill="rgba(255,255,255,0.82)">${xe(n.sub)}</text>`;
     } else if (isLeaf) {
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="10" fill="${nc}" stroke="${nc}" stroke-width="1.5" filter="url(#${filtId})"/>`;
       boxes += drawLabel(n.label, x, y, BOX_W_DYN, fsize, '#1a1a2e', !!n.sub);
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="#374151">${n.sub}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="#374151">${xe(n.sub)}</text>`;
     } else {
       boxes += `<rect x="${bx}" y="${y}" width="${BOX_W_DYN}" height="${BOX_H}" rx="10" fill="rgba(${nrgb},0.10)" stroke="${nc}" stroke-width="2" filter="url(#${filtId})"/>`;
       boxes += drawLabel(n.label, x, y, BOX_W_DYN, fsize, '#111', !!n.sub);
-      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="${nc}">${n.sub}</text>`;
+      if (n.sub && !isCofactor) boxes += `<text x="${x}" y="${subY}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="${fsub}" fill="${nc}">${xe(n.sub)}</text>`;
+    }
+
+    // Cofactor chips below each node
+    if (n.cofactors && n.cofactors.length > 0) {
+      const CF_COLORS = {
+        crit: {bg:'#FEE2E2', tx:'#991B1B'},
+        warn: {bg:'#FEF3C7', tx:'#92400E'},
+        ok:   {bg:'#D1FAE5', tx:'#065F46'},
+        info: {bg:'#EDE9FE', tx:'#5B21B6'},
+      };
+      const CH = 16, CGap = 5;
+      const chipW = n.cofactors.map(cf => Math.min(cf.label.length * 4.8 + 16, BOX_W_DYN / 2 - 4));
+      const totalW = chipW.reduce((a, b) => a + b, 0) + (n.cofactors.length - 1) * CGap;
+      let cfx = x - totalW / 2;
+      const cfy = pos2[n.id].y + BOX_H + 7;
+      n.cofactors.forEach((cf, ci) => {
+        const cc = CF_COLORS[cf.type] || CF_COLORS.info;
+        const tw = chipW[ci];
+        boxes += `<rect x="${cfx}" y="${cfy}" width="${tw}" height="${CH}" rx="${CH / 2}" fill="${cc.bg}"/>`;
+        boxes += `<text x="${cfx + tw / 2}" y="${cfy + 11}" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="8.5" font-weight="700" fill="${cc.tx}">${xe(cf.label)}</text>`;
+        cfx += tw + CGap;
+      });
     }
   });
 
@@ -3265,95 +3333,302 @@ function showBiomarkerCard(b) {
 
 // ── SHARE: Bild + Text, alle Plattformen ─────────────────────────────────
 let _shareInProgress = false;
+// Share Modal State
+let _smBlobs = [null, null], _smUrls = [null, null], _smNames = ['', ''];
+let _smTextWa = '', _smTextFull = '', _smBmName = '', _smShareUrl = null;
+
+// Einzelne saubere Kaskaden-PNG generieren (kein Footer mit Links)
+async function generateCascadeImage(bm, cascadeDir, label, color) {
+  if (!cascadeDir) return null;
+  try {
+    const svgStr = renderCascadeSVG(cascadeDir);
+    if (!svgStr) return null;
+    const W = 660, PAD = 20, SCALE = 2;
+    const headerH = 88, footerH = 32;
+    function getSvgDims(s) {
+      const m = s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+      return { w: m ? parseFloat(m[1]) : 400, h: m ? parseFloat(m[2]) : 340 };
+    }
+    const dims = getSvgDims(svgStr);
+    const renderW = W - PAD * 2;
+    const renderH = Math.round((dims.h / dims.w) * renderW);
+    const H = headerH + renderH + footerH;
+    const canvas = document.createElement('canvas');
+    canvas.width = W * SCALE; canvas.height = H * SCALE;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(SCALE, SCALE);
+    // Hintergrund
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, '#d5f1ef'); grad.addColorStop(1, '#ece9f4');
+    ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+    // Header-Karte
+    ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.1)'; ctx.shadowBlur = 14;
+    roundRect(ctx, PAD, 10, W - PAD * 2, headerH - 14, 14); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = '#9ca3af'; ctx.font = '600 9px Inter,sans-serif';
+    ctx.fillText('ORY BIOMARKER · VELOX KI', PAD + 16, 30);
+    ctx.fillStyle = '#111'; ctx.font = 'bold 26px Inter,sans-serif';
+    ctx.fillText(bm.name, PAD + 16, 62);
+    ctx.fillStyle = color; ctx.beginPath();
+    ctx.arc(W - PAD - 26, 44, 20, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.font = 'bold 12px Inter,sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText('ORY', W - PAD - 26, 49); ctx.textAlign = 'left';
+    ctx.fillStyle = color; ctx.font = '700 9.5px Inter,sans-serif';
+    ctx.fillText(label, PAD + 16, 78);
+    // SVG-Kaskade
+    await new Promise(res => {
+      const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const img = new Image();
+      img.onload = () => { ctx.drawImage(img, PAD, headerH, renderW, renderH); URL.revokeObjectURL(url); res(); };
+      img.onerror = res; img.src = url;
+    });
+    // Footer
+    const fy = headerH + renderH + 20;
+    ctx.fillStyle = '#9ca3af'; ctx.font = '500 8.5px Inter,sans-serif';
+    ctx.fillText('biomarker.ory-berlin.de', PAD, fy);
+    ctx.textAlign = 'right';
+    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', W - PAD, fy);
+    ctx.textAlign = 'left';
+    return new Promise(res => canvas.toBlob(res, 'image/png'));
+  } catch(e) { console.error('generateCascadeImage:', e); return null; }
+}
+
 async function shareItem(name, platform) {
   if (_shareInProgress) return;
   _shareInProgress = true;
-  setTimeout(() => { _shareInProgress = false; }, 4000);
+  setTimeout(() => { _shareInProgress = false; }, 10000);
 
   const bm = findBiomarker(name.toLowerCase()) || findBiomarker(name);
   if (!bm) { _shareInProgress = false; showShareToast('Biomarker nicht gefunden'); return; }
-  showShareToast('Wird vorbereitet…');
-
-  // Tests (bis zu 3)
-  const tests = (bm.foundIn || []).map(fi => TESTS.find(t => t.id === fi.id)).filter(Boolean).slice(0, 3);
-
-  // Beschreibung: 2 vollständige Sätze
-  const descFull = bm.desc || '';
-  const sents = descFull.match(/[^.!?]*[.!?]+/g) || [descFull];
-  const twoSentences = sents.slice(0, 2).join(' ').trim();
-
-  // Cofaktoren aus der Kaskade
-  const casc = getCascadeForBiomarker(bm.name);
-  const allNodes = [...(casc?.aufnahme?.nodes || casc?.nodes || []), ...(casc?.wirkung?.nodes || [])];
-  const cofactors = [...new Set(allNodes.map(n => n.via).filter(Boolean))].slice(0, 5);
-
-  // Sharetext (reiner Text — kein Bild eingebettet)
-  const productLines = tests.map(t => `🔬 ${t.name} · ${t.price}\n   https://ory-berlin.de/products/${t.shopSlug}`).join('\n');
-  const cofLine = cofactors.length ? `\nWichtige Cofaktoren: ${cofactors.join(' · ')}` : '';
-  const shareText = [
-    `*${bm.name}* – ORY Biomarker`,
-    '',
-    twoSentences,
-    cofLine,
-    '',
-    productLines || '',
-    '',
-    '📊 https://biomarker.ory-berlin.de',
-    '⚡ https://ory-berlin.de/velox',
-    '',
-    '_Kein Ersatz für ärztliche Beratung._'
-  ].filter(l => l !== undefined).join('\n');
-
-  // Bild generieren
-  const pngBlob = await generateCascadeBlob(bm);
-  const fileName = `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`;
-  const file = pngBlob ? new File([pngBlob], fileName, { type: 'image/png' }) : null;
-
-  if (platform === 'image') {
-    // Nur bei explizitem "Bild speichern"-Button herunterladen
-    if (pngBlob) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(pngBlob);
-      a.download = fileName; a.click();
-      showShareToast('Kaskaden-Bild gespeichert');
-    }
-    _shareInProgress = false; return;
-  }
 
   if (platform === 'li') {
     window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://biomarker.ory-berlin.de'), '_blank');
     _shareInProgress = false; return;
   }
 
-  // Mobil-Erkennung: iOS/Android → nativer File-Share; macOS/Desktop → Download + Text
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  showShareToast('Kaskaden werden erstellt…');
 
-  if (isMobile && file && navigator.canShare && navigator.canShare({ files: [file] })) {
-    // iOS/Android: nativer Share-Sheet mit Bild + Text (kein url → kein doppeltes Bild)
-    try {
-      await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: shareText });
-      _shareInProgress = false; return;
-    } catch(e) {
-      _shareInProgress = false;
-      if (e.name === 'AbortError') return;
+  // Text aufbauen
+  const tests = (bm.foundIn || []).map(fi => TESTS.find(t => t.id === fi.id)).filter(Boolean).slice(0, 3);
+  const sents = (bm.desc || '').match(/[^.!?]*[.!?]+/g) || [bm.desc || ''];
+  const twoSentences = sents.slice(0, 2).join(' ').trim();
+  const casc = getCascadeForBiomarker(bm.name);
+  const allNodes = [...(casc?.aufnahme?.nodes || casc?.nodes || []), ...(casc?.wirkung?.nodes || [])];
+  const cofactors = [...new Set(allNodes.map(n => n.via).filter(Boolean))].slice(0, 5);
+  const cofLine = cofactors.length ? `Cofaktoren: ${cofactors.join(' · ')}` : '';
+  const productNamesOnly = tests.map(t => `🔬 ${t.name} · ${t.price}`).join('\n');
+  const productWithLinks = tests.map(t => `🔬 ${t.name} · ${t.price}\nhttps://ory-berlin.de/products/${t.shopSlug}`).join('\n\n');
+
+  // WA/Signal: KEIN Link → kein Produkt-Vorschaubild in WhatsApp
+  const textNoLinks = [
+    `${bm.name} – ORY Biomarker`, '',
+    twoSentences,
+    cofLine || null, '',
+    productNamesOnly || null, '',
+    'Kein Ersatz für ärztliche Beratung.'
+  ].filter(l => l !== null).join('\n');
+
+  // E-Mail/Clipboard: mit Links
+  const textFull = [
+    `${bm.name} – ORY Biomarker`, '',
+    twoSentences,
+    cofLine || null, '',
+    productWithLinks || null, '',
+    'https://biomarker.ory-berlin.de',
+    'https://ory-berlin.de/velox', '',
+    'Kein Ersatz für ärztliche Beratung.'
+  ].filter(l => l !== null).join('\n');
+
+  _smTextWa = textNoLinks;
+  _smTextFull = textFull;
+  _smBmName = bm.name;
+
+  // "Als Bild" → kombiniertes Bild downloaden (alte generateCascadeBlob)
+  if (platform === 'image') {
+    const blob = await generateCascadeBlob(bm);
+    if (blob) {
+      const fn = `ory-${bm.name.toLowerCase().replace(/\s+/g,'-')}.png`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      showShareToast('Kaskaden-Bild gespeichert');
+    }
+    _shareInProgress = false; return;
+  }
+
+  // EIN kombiniertes Bild: Aufnahme + Wirkung + Textfooter
+  const combinedBlob = await generateCascadeBlob(bm);
+  const slug = bm.name.toLowerCase().replace(/\s+/g, '-');
+  _smBlobs = [combinedBlob, null];
+  _smUrls = [combinedBlob ? URL.createObjectURL(combinedBlob) : null, null];
+  _smNames = [`ory-${slug}.png`, ''];
+
+  // iOS/Android: nativer Share mit kombiniertem Bild + Text
+  const _isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (_isMobile && combinedBlob && navigator.canShare) {
+    const file = new File([combinedBlob], _smNames[0], { type: 'image/png' });
+    if (navigator.canShare({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: `ORY Biomarker: ${bm.name}`, text: textNoLinks });
+        _shareInProgress = false; return;
+      } catch(e) {
+        _shareInProgress = false;
+        if (e.name === 'AbortError') return;
+      }
     }
   }
 
-  // Desktop/macOS: Bild herunterladen + Text in Zwischenablage kopieren
-  if (pngBlob) {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(pngBlob);
-    a.download = fileName; a.click();
-  }
-  await navigator.clipboard.writeText(shareText).catch(() => {});
-
-  if (platform === 'wa') {
-    setTimeout(() => window.open('https://wa.me/?text=' + encodeURIComponent(shareText), '_blank'), 400);
-    showShareToast('Bild gespeichert · Text kopiert · WA öffnet');
-  } else {
-    showShareToast('Bild gespeichert · Text in Zwischenablage');
-  }
+  // Desktop: Modal öffnen + Bild im Hintergrund hochladen
+  _smShareUrl = null;
+  _showShareModal(bm.name, textFull);
   _shareInProgress = false;
+
+  // Bild zu /api/share hochladen → echte Preview-URL für WA/TG/LinkedIn
+  if (combinedBlob) {
+    _uploadShareImage(combinedBlob, bm.name).then(url => {
+      _smShareUrl = url;
+      if (url) {
+        const btn = document.getElementById('sm-upload-status');
+        if (btn) { btn.textContent = 'Bild hochgeladen · Teilen aktiv'; btn.style.color = '#22c55e'; }
+        // Link im Modal-Text nachrüsten
+        const body = document.getElementById('sm-text-body');
+        if (body) {
+          const linkHtml = `<br><br><a href="${url}" target="_blank" rel="noopener" style="color:#889FFE;word-break:break-all;">${url}</a>`;
+          if (!body.innerHTML.includes(url)) body.innerHTML += linkHtml;
+        }
+      }
+    });
+  }
+}
+
+async function _uploadShareImage(blob, name) {
+  try {
+    const fd = new FormData();
+    fd.append('image', blob, 'cascade.png');
+    const res = await fetch('/api/share', {
+      method: 'POST',
+      headers: { 'x-title': encodeURIComponent(`ORY Biomarker: ${name}`) },
+      body: fd,
+    });
+    if (!res.ok) return null;
+    const { shareUrl } = await res.json();
+    return shareUrl || null;
+  } catch(e) { return null; }
+}
+
+function _showShareModal(bmName, text) {
+  document.getElementById('sm-title').textContent = `${bmName} – Kaskade teilen`;
+
+  // Kombiniertes Bild setzen
+  const wrap = document.getElementById('sm-img-wrap');
+  const img = document.getElementById('sm-img-1');
+  if (_smUrls[0]) { img.src = _smUrls[0]; wrap.style.display = 'block'; }
+  else { wrap.style.display = 'none'; }
+
+  // Text als HTML mit klickbaren Links
+  const htmlText = text.replace(/https?:\/\/[^\s\n]+/g, url =>
+    `<a href="${url}" target="_blank" rel="noopener">${url}</a>`
+  ).replace(/\n/g, '<br>');
+  document.getElementById('sm-text-body').innerHTML = htmlText;
+
+  document.getElementById('shareModal').classList.add('open');
+}
+
+function smClose() {
+  document.getElementById('shareModal').classList.remove('open');
+}
+
+async function smCopyImage(idx) {
+  const blob = _smBlobs[idx - 1];
+  const url = _smUrls[idx - 1];
+  const name = _smNames[idx - 1];
+  if (!blob) { showShareToast('Kein Bild verfügbar'); return; }
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    showShareToast(`Bild ${idx} kopiert · Cmd+V zum Einfügen`);
+  } catch(e) {
+    const a = document.createElement('a'); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showShareToast('Bild gespeichert (Clipboard nicht verfügbar)');
+  }
+}
+
+async function smCopyText() {
+  await navigator.clipboard.writeText(_smTextFull).catch(() => {});
+  showShareToast('Text kopiert');
+}
+
+async function _autoCopyImg1() {
+  if (!_smBlobs[0]) return false;
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': _smBlobs[0] })]);
+    return true;
+  } catch(e) { return false; }
+}
+
+async function smOpenWa() {
+  if (_smShareUrl) {
+    // Echte Preview-URL: WhatsApp zeigt Vorschaukarte mit Bild
+    const text = _smShareUrl + '\n\n' + _smTextWa;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    showShareToast('WhatsApp öffnet · Bild erscheint als Vorschau');
+  } else {
+    const copied = await _autoCopyImg1();
+    window.open('https://wa.me/?text=' + encodeURIComponent(_smTextWa), '_blank');
+    showShareToast(copied
+      ? 'Bild kopiert · In WhatsApp mit Cmd+V einfügen'
+      : 'WhatsApp öffnet · Bild lädt noch…');
+  }
+}
+
+async function smOpenSignal() {
+  const copied = await _autoCopyImg1();
+  await navigator.clipboard.writeText((_smShareUrl ? _smShareUrl + '\n\n' : '') + _smTextWa).catch(() => {});
+  try { window.open('signal://', '_blank'); } catch(e) {}
+  showShareToast(copied
+    ? 'Bild + Text kopiert · In Signal mit Cmd+V einfügen'
+    : 'Link + Text kopiert · In Signal einfügen');
+}
+
+async function smOpenTelegram() {
+  if (_smShareUrl) {
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(_smShareUrl) + '&text=' + encodeURIComponent(_smTextWa), '_blank');
+    showShareToast('Telegram öffnet · Bild erscheint als Vorschau');
+  } else {
+    const copied = await _autoCopyImg1();
+    window.open('https://t.me/share/url?text=' + encodeURIComponent(_smTextWa), '_blank');
+    showShareToast(copied ? 'Bild kopiert · In Telegram mit Cmd+V einfügen' : 'Telegram öffnet');
+  }
+}
+
+async function smOpenLinkedIn() {
+  if (_smShareUrl) {
+    window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(_smShareUrl), '_blank');
+    showShareToast('LinkedIn öffnet · Bild erscheint als Post-Vorschau');
+  } else {
+    showShareToast('Bild wird noch hochgeladen · Bitte kurz warten');
+  }
+}
+
+async function smOpenMail() {
+  // Bild herunterladen + als Anhang-Hinweis im E-Mail-Body
+  if (_smBlobs[0]) {
+    const a = document.createElement('a'); a.href = _smUrls[0]; a.download = _smNames[0] || 'ory-kaskade.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  const imgLine = _smShareUrl ? `\n\nKaskadebild: ${_smShareUrl}` : '';
+  const sub = encodeURIComponent(`ORY Biomarker: ${_smBmName}`);
+  const body = encodeURIComponent(_smTextFull + imgLine);
+  window.open(`mailto:?subject=${sub}&body=${body}`, '_self');
+  showShareToast('Bild gespeichert · E-Mail öffnet · Bild als Anhang hinzufügen');
+}
+
+function smSaveImages() {
+  _smUrls.forEach((url, i) => {
+    if (!url) return;
+    const a = document.createElement('a'); a.href = url; a.download = _smNames[i];
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+  showShareToast('Bilder gespeichert');
 }
 
 async function generateCascadeBlob(bm) {
@@ -3363,8 +3638,6 @@ async function generateCascadeBlob(bm) {
     if (!cascade) return null;
 
     const aufDir = cascade.aufnahme || cascade;
-    const wirDir = cascade.wirkung || null;
-    const hasTwo = !!(cascade.aufnahme && cascade.wirkung);
     const color = aufDir.color || '#889FFE';
 
     function getSvgDims(s) {
@@ -3388,28 +3661,23 @@ async function generateCascadeBlob(bm) {
     const descText = sents.slice(0, 2).join(' ').trim();
     const descLines = wrapLine(descText, 88);
 
-    // SVGs rendern
+    // Nur Aufnahme rendern
     const aufSvg = renderCascadeSVG(aufDir);
-    const wirSvg = wirDir ? renderCascadeSVG(wirDir) : null;
     const aufDims = getSvgDims(aufSvg);
-    const wirDims = wirSvg ? getSvgDims(wirSvg) : { w: 1, h: 1 };
 
     // Cofaktoren + Tests für Footer
-    const allNodes2 = [...(aufDir.nodes||[]), ...(wirDir?.nodes||[])];
-    const cofactors2 = [...new Set(allNodes2.map(n=>n.via).filter(Boolean))].slice(0,5);
+    const cofactors2 = [...new Set((aufDir.nodes||[]).map(n=>n.via).filter(Boolean))].slice(0,5);
     const tests2 = (bm.foundIn||[]).map(fi=>TESTS.find(t=>t.id===fi.id)).filter(Boolean).slice(0,3);
     const cofText = cofactors2.length ? 'Cofaktoren: ' + cofactors2.join(' · ') : '';
     const testLines2 = tests2.map(t=>`${t.name} · ${t.price}  ory-berlin.de/products/${t.shopSlug}`);
 
-    // Canvas-Layout
-    const SCALE = 2, W = 820, PAD = 22;
+    // Canvas-Layout – nur eine Spalte, volle Breite
+    const SCALE = 2, W = 640, PAD = 20;
     const footerLineCount = descLines.length + (cofText?1:0) + testLines2.length + 2;
     const headerH = 88, labelH = 28, footerH = footerLineCount * 17 + 30;
-    const colW = hasTwo ? Math.floor((W - PAD * 3) / 2) : W - PAD * 2;
+    const colW = W - PAD * 2;
     const aufRH = Math.round((aufDims.h / aufDims.w) * colW);
-    const wirRH = hasTwo ? Math.round((wirDims.h / wirDims.w) * colW) : 0;
-    const cascadeH = Math.max(aufRH, wirRH);
-    const H = headerH + labelH + cascadeH + 16 + footerH;
+    const H = headerH + labelH + aufRH + 20 + footerH;
 
     const canvas = document.createElement('canvas');
     canvas.width = W * SCALE; canvas.height = H * SCALE;
@@ -3421,62 +3689,57 @@ async function generateCascadeBlob(bm) {
     grad.addColorStop(0, '#d5f1ef'); grad.addColorStop(1, '#ece9f4');
     ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
 
-    // Header-Karte
-    ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.1)'; ctx.shadowBlur = 16;
+    // Header mit ORY-Blau-Gradient
+    const hdrGrad = ctx.createLinearGradient(PAD, 0, W - PAD, 0);
+    hdrGrad.addColorStop(0, '#A8E8E2'); hdrGrad.addColorStop(1, '#889FFE');
+    ctx.fillStyle = hdrGrad; ctx.shadowColor = 'rgba(0,0,0,.15)'; ctx.shadowBlur = 16;
     roundRect(ctx, PAD, 12, W - PAD * 2, headerH - 8, 14); ctx.fill(); ctx.shadowBlur = 0;
-    ctx.fillStyle = '#9ca3af'; ctx.font = '600 9px Inter,sans-serif';
+    // Subtitle weiß
+    ctx.fillStyle = 'rgba(255,255,255,0.80)'; ctx.font = '600 9px Inter,sans-serif';
     ctx.fillText('ORY BIOMARKER · VELOX KI', PAD + 18, 34);
-    ctx.fillStyle = '#111'; ctx.font = 'bold 32px Inter,sans-serif';
+    // Biomarker-Name weiß
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 30px Inter,sans-serif';
     ctx.fillText(bm.name, PAD + 18, 72);
-    // Farbakzent-Kreis rechts
-    ctx.fillStyle = color; ctx.beginPath();
-    ctx.arc(W - PAD - 30, 50, 22, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font = 'bold 14px Inter,sans-serif';
-    ctx.textAlign = 'center'; ctx.fillText('ORY', W - PAD - 30, 55); ctx.textAlign = 'left';
+    // ORY-Logo: weißer Kreis, schwarzer Text
+    ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(0,0,0,.12)'; ctx.shadowBlur = 6;
+    ctx.beginPath(); ctx.arc(W - PAD - 28, 50, 21, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = '#111'; ctx.font = 'bold 13px Inter,sans-serif';
+    ctx.textAlign = 'center'; ctx.fillText('ORY', W - PAD - 28, 55); ctx.textAlign = 'left';
 
-    // Abschnitt-Label + Karten-Hintergrund
+    // Aufnahme-Karte
     const sectionY = headerH + 6;
-    async function drawCol(svgStr, dims, x, rH, label) {
-      ctx.fillStyle = 'rgba(255,255,255,0.62)'; ctx.shadowColor = 'rgba(0,0,0,.07)'; ctx.shadowBlur = 10;
-      roundRect(ctx, x, sectionY + labelH - 6, colW, rH + 20, 12); ctx.fill(); ctx.shadowBlur = 0;
-      ctx.fillStyle = color; ctx.font = 'bold 10px Inter,sans-serif';
-      ctx.fillText(label, x + 10, sectionY + labelH - 10);
-      await new Promise(res => {
-        const blob2 = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
-        const url2 = URL.createObjectURL(blob2);
-        const img2 = new Image();
-        img2.onload = () => { ctx.drawImage(img2, x + 4, sectionY + labelH + 4, colW - 8, rH); URL.revokeObjectURL(url2); res(); };
-        img2.onerror = res; img2.src = url2;
-      });
-    }
-
-    await drawCol(aufSvg, aufDims, PAD, aufRH, '⬇  AUFNAHME');
-    if (hasTwo && wirSvg) await drawCol(wirSvg, wirDims, PAD * 2 + colW, wirRH, '⚙  WIRKUNG');
+    ctx.fillStyle = 'rgba(255,255,255,0.62)'; ctx.shadowColor = 'rgba(0,0,0,.07)'; ctx.shadowBlur = 10;
+    roundRect(ctx, PAD, sectionY + labelH - 6, colW, aufRH + 20, 12); ctx.fill(); ctx.shadowBlur = 0;
+    ctx.fillStyle = color; ctx.font = 'bold 10px Inter,sans-serif';
+    ctx.fillText('⬇  AUFNAHME', PAD + 10, sectionY + labelH - 10);
+    await new Promise(res => {
+      const blob2 = new Blob([aufSvg], { type: 'image/svg+xml;charset=utf-8' });
+      const url2 = URL.createObjectURL(blob2);
+      const img2 = new Image();
+      img2.onload = () => { ctx.drawImage(img2, PAD + 4, sectionY + labelH + 4, colW - 8, aufRH); URL.revokeObjectURL(url2); res(); };
+      img2.onerror = res; img2.src = url2;
+    });
 
     // Footer: Beschreibung + Cofaktoren + Tests + Links
-    const fy0 = sectionY + labelH + cascadeH + 26;
+    const fy0 = sectionY + labelH + aufRH + 26;
     let fy = fy0;
-    // Beschreibung
     ctx.fillStyle = '#374151'; ctx.font = '500 12px Inter,sans-serif';
     descLines.forEach(l => { ctx.fillText(l, PAD, fy); fy += 17; });
-    // Cofaktoren
     if (cofText) {
       fy += 4;
       ctx.fillStyle = '#6366f1'; ctx.font = '600 11px Inter,sans-serif';
       ctx.fillText(cofText, PAD, fy); fy += 18;
     }
-    // Produkt-Links
     if (testLines2.length) {
       fy += 2;
       ctx.fillStyle = '#111'; ctx.font = '600 10.5px Inter,sans-serif';
       testLines2.forEach(l => { ctx.fillText('🔬 ' + l, PAD, fy); fy += 16; });
     }
-    // Site-Links
     fy += 6;
     ctx.fillStyle = '#111'; ctx.font = 'bold 11px Inter,sans-serif';
     ctx.fillText('biomarker.ory-berlin.de  ·  ory-berlin.de/velox', PAD, fy);
     ctx.fillStyle = '#9ca3af'; ctx.font = '500 9px Inter,sans-serif';
-    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', W - PAD - 240, fy);
+    ctx.fillText('Kein Ersatz für ärztliche Diagnostik', W - PAD - 220, fy);
 
     return await new Promise(res => canvas.toBlob(res, 'image/png'));
   } catch(e) { console.error('blob:', e); return null; }
@@ -4277,5 +4540,65 @@ window.addEventListener('scroll', () => {
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
 });
 </script>
+<!-- Share Modal -->
+<div id="shareModal" onclick="if(event.target===this)smClose()">
+  <div class="sm-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <p class="sm-title" id="sm-title" style="margin:0"></p>
+      <button class="sm-btn sm-btn-close" onclick="smClose()" style="flex:0;padding:.35rem .7rem;font-size:.85rem;">✕</button>
+    </div>
+
+    <!-- Kombiniertes Bild -->
+    <div id="sm-img-wrap" style="display:none;position:relative;">
+      <img class="sm-img" id="sm-img-1" src="" alt="Kaskade" style="width:100%;border-radius:.8rem;display:block;" />
+    </div>
+
+    <!-- Großer Kopier-Button -->
+    <button class="sm-copy-all-btn" onclick="smCopyImage(1)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Bild kopieren · dann Cmd+V einfügen
+    </button>
+
+    <!-- Text mit klickbaren Links -->
+    <div class="sm-text-section">
+      <div class="sm-text-label">
+        <span>Text</span>
+        <button class="sm-text-copy-btn" onclick="smCopyText()">Kopieren</button>
+      </div>
+      <div class="sm-text-body" id="sm-text-body"></div>
+    </div>
+
+    <!-- Upload-Status -->
+    <p id="sm-upload-status" style="font-size:.72rem;color:#9ca3af;margin:0;text-align:center;">Bild wird hochgeladen…</p>
+
+    <!-- App-Buttons -->
+    <div class="sm-btns">
+      <button class="sm-btn sm-btn-wa" onclick="smOpenWa()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.117.549 4.099 1.505 5.829L.058 23.6c-.068.271.162.52.432.464l5.919-1.433A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.814 9.814 0 0 1-5.001-1.368l-.358-.214-3.714.9.948-3.617-.234-.371A9.818 9.818 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+        WhatsApp
+      </button>
+      <button class="sm-btn sm-btn-signal" onclick="smOpenSignal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.93 17.892l-.93.108-.93-.108A6.004 6.004 0 0 1 6 12c0-3.314 2.686-6 6-6s6 2.686 6 6a6.004 6.004 0 0 1-5.07 5.892z"/></svg>
+        Signal
+      </button>
+      <button class="sm-btn sm-btn-tg" onclick="smOpenTelegram()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.247l-1.97 9.289c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.09 14.748l-2.975-.924c-.645-.204-.658-.645.136-.953l11.61-4.478c.537-.194 1.006.131.7.854z"/></svg>
+        Telegram
+      </button>
+      <button class="sm-btn" style="background:#0A66C2;color:#fff;" onclick="smOpenLinkedIn()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </button>
+      <button class="sm-btn sm-btn-mail" onclick="smOpenMail()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        E-Mail
+      </button>
+      <button class="sm-btn sm-btn-save" onclick="smSaveImages()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Speichern
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
